@@ -331,7 +331,7 @@ void Piece::DropInstantly(char grid[GRID_HEIGHT][GRID_WIDTH])
 	}
 }
 
-void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], bool clockwise)
+void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwise)
 {
 	// Assume rotation around character at index 1 (characters[1])
 	switch (orientation)
@@ -512,22 +512,122 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], bool clockwise)
 	}
 }
 
-void Piece::Fix(char grid[GRID_HEIGHT][GRID_WIDTH])
+void Piece::Fix(char grid[GRID_HEIGHT][GRID_WIDTH]) // Need a function to resolve gravity
 {
-
+	for (int i = 0; i < 3; i++)
+	{
+		grid[positions[i][1]][positions[i][0]] = characters[i];
+	}
 }
 
 void Piece::ShuffleLetters()
 {
-
+	char temp = characters[0];
+	characters[0] = characters[1];
+	characters[1] = characters[2];
+	characters[2] = temp;
 }
 
 void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 {
-
+	switch (orientation)
+	{
+	case Up:
+		if (shape == L)
+		{
+			// Change L to Line
+			if (grid[positions[1][1] + 1][positions[1][0]] == ' ')
+			{
+				positions[2][0]--;
+				positions[2][1]++;
+				shape = Line;
+			}
+		}
+		else
+		{
+			// Change Line to L
+			if (grid[positions[1][1]][positions[1][0] + 1] == ' ')
+			{
+				positions[2][0]++;
+				positions[2][1]--;
+				shape = L;
+			}
+		}
+		break;
+	case Right:
+		if (shape == L)
+		{
+			// Change L to Line
+			if (grid[positions[1][1]][positions[1][0] - 1] == ' ')
+			{
+				positions[2][0]--;
+				positions[2][1]--;
+				shape = Line;
+			}
+		}
+		else
+		{
+			// Change Line to L
+			if (grid[positions[1][1] + 1][positions[1][0]] == ' ')
+			{
+				positions[2][0]++;
+				positions[2][1]++;
+				shape = L;
+			}
+		}
+		break;
+	case Down:
+		if (shape == L)
+		{
+			// Change L to Line
+			if (grid[positions[1][1] - 1][positions[1][0]] == ' ')
+			{
+				positions[2][0]++;
+				positions[2][1]--;
+				shape = Line;
+			}
+		}
+		else
+		{
+			// Change Line to L
+			if (grid[positions[1][1]][positions[1][0] - 1] == ' ')
+			{
+				positions[2][0]--;
+				positions[2][1]++;
+				shape = L;
+			}
+		}
+		break;
+	case Left:
+		if (shape == L)
+		{
+			// Change L to Line
+			if (grid[positions[1][1]][positions[1][0] + 1] == ' ')
+			{
+				positions[2][0]++;
+				positions[2][1]++;
+				shape = Line;
+			}
+		}
+		else
+		{
+			// Change Line to L
+			if (grid[positions[1][1] - 1][positions[1][0]] == ' ')
+			{
+				positions[2][0]--;
+				positions[2][1]--;
+				shape = L;
+			}
+		}
+		break;
+	}
 }
 
 void Piece::ChangeLetters()
 {
-
+	for (int i = 0; i < 3; i++)
+	{
+		int randomPos = rand() % ALPHABET.length();
+		characters[i] = ALPHABET[randomPos];
+	}
 }
