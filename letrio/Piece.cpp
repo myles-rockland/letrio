@@ -70,6 +70,149 @@ Piece::Piece()
 	}
 }
 
+bool Piece::Drop(const char grid[GRID_HEIGHT][GRID_WIDTH])
+{
+	switch (orientation)
+	{
+	case Up:
+		if (shape == L)
+		{
+			// Drop L one place
+			if (grid[positions[1][1] + 1][positions[1][0]] == ' ' && grid[positions[2][1] + 1][positions[2][0]] == ' ')
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					positions[i][1]++;
+				}
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			// Drop Line one place
+			if (grid[positions[2][1] + 1][positions[2][0]] == ' ')
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					positions[i][1]++;
+				}
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		break;
+	case Right:
+		if (shape == L)
+		{
+			// Drop L one place
+			if (grid[positions[2][1] + 1][positions[2][0]] == ' ' && grid[positions[0][1] + 1][positions[0][0]] == ' ')
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					positions[i][1]++;
+				}
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			// Drop Line one place
+			if (grid[positions[2][1] + 1][positions[2][0]] == ' ' && grid[positions[1][1] + 1][positions[1][0]] == ' ' && grid[positions[0][1] + 1][positions[0][0]] == ' ')
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					positions[i][1]++;
+				}
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		break;
+	case Down:
+		if (shape == L)
+		{
+			// Drop L one place
+			if (grid[positions[2][1] + 1][positions[2][0]] == ' ' && grid[positions[0][1] + 1][positions[0][0]] == ' ')
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					positions[i][1]++;
+				}
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			// Drop Line one place
+			if (grid[positions[0][1] + 1][positions[0][0]] == ' ')
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					positions[i][1]++;
+				}
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		break;
+	case Left:
+		if (shape == L)
+		{
+			// Drop L one place
+			if (grid[positions[0][1] + 1][positions[0][0]] == ' ' && grid[positions[1][1] + 1][positions[1][0]] == ' ')
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					positions[i][1]++;
+				}
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			// Drop Line one place
+			if (grid[positions[2][1] + 1][positions[2][0]] == ' ' && grid[positions[1][1] + 1][positions[1][0]] == ' ' && grid[positions[0][1] + 1][positions[0][0]] == ' ')
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					positions[i][1]++;
+				}
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		break;
+	}
+}
+
 void Piece::MoveLeft(const char grid[GRID_HEIGHT][GRID_WIDTH])
 {
 	switch (orientation)
@@ -334,10 +477,11 @@ void Piece::DropInstantly(char grid[GRID_HEIGHT][GRID_WIDTH])
 void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwise)
 {
 	// Assume rotation around character at index 1 (characters[1])
+	Orientation desiredOrientation;
 	switch (orientation)
 	{
 	case Up:
-		Orientation desiredOrientation = (clockwise) ? Right : Left;
+		desiredOrientation = (clockwise) ? Right : Left;
 		if (shape == L)
 		{
 			// Attempt to rotate the L
@@ -380,7 +524,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 		}
 		break;
 	case Right:
-		Orientation desiredOrientation = (clockwise) ? Down : Up;
+		desiredOrientation = (clockwise) ? Down : Up;
 		if (shape == L)
 		{
 			// Attempt to rotate the L
@@ -423,7 +567,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 		}
 		break;
 	case Down:
-		Orientation desiredOrientation = (clockwise) ? Left : Right;
+		desiredOrientation = (clockwise) ? Left : Right;
 		if (shape == L)
 		{
 			// Attempt to rotate the L
@@ -466,7 +610,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 		}
 		break;
 	case Left:
-		Orientation desiredOrientation = (clockwise) ? Up : Down;
+		desiredOrientation = (clockwise) ? Up : Down;
 		if (shape == L)
 		{
 			// Attempt to rotate the L
@@ -630,4 +774,29 @@ void Piece::ChangeLetters()
 		int randomPos = rand() % ALPHABET.length();
 		characters[i] = ALPHABET[randomPos];
 	}
+}
+
+bool Piece::IsOverlapping(const char grid[GRID_HEIGHT][GRID_WIDTH]) const
+{
+	for (int i = 0; i < 3; i++)
+	{
+		if (grid[positions[i][1]][positions[i][0]] != ' ')
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+char Piece::GetCharacter(const int index) const
+{
+	try
+	{
+		return characters[index];
+	}
+	catch (std::out_of_range& e)
+	{
+		std::cerr << "Index out of range error: " << e.what() << std::endl;
+	}
+	return ' ';
 }
