@@ -85,7 +85,7 @@ Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullp
         }
     }
     wordsAlphaFile.close();
-    cout << "Valid words loaded";
+    cout << "Valid words loaded" << endl;
 }
 
 void Game::CleanUp()
@@ -146,19 +146,19 @@ void Game::HandleInput()
             {
                 speed *= 1.3; // Might need to base this on start speed... don't want floating point errors
             }
-            if (state[SDL_SCANCODE_Z])
+            if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_Z) // Need to only activate once
             {
                 currentPiece.Rotate(grid, false);
             }
-            if (state[SDL_SCANCODE_X])
+            if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_X)
             {
                 currentPiece.Rotate(grid);
             }
-            if (state[SDL_SCANCODE_C])
+            if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_C)
             {
                 currentPiece.ShuffleLetters();
             }
-            if (state[SDL_SCANCODE_SPACE])
+            if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_SPACE)
             {
                 currentPiece.ChangeShape(grid);
             }

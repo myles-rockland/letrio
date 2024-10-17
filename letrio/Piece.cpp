@@ -68,6 +68,10 @@ Piece::Piece()
 		positions[2][1] = (shape == L) ? 0 : 0;
 		break;
 	}
+	for (int i = 0; i < 3; i++)
+	{
+		std::cout << "Character " << characters[i] << " is at position {" << positions[i][0] << ", " << positions[i][1] << "}" << std::endl;
+	}
 }
 
 bool Piece::Drop(const char grid[GRID_HEIGHT][GRID_WIDTH])
@@ -476,6 +480,7 @@ void Piece::DropInstantly(char grid[GRID_HEIGHT][GRID_WIDTH])
 
 void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwise)
 {
+	std::cout << "Piece was rotated" << std::endl;
 	// Assume rotation around character at index 1 (characters[1])
 	Orientation desiredOrientation;
 	switch (orientation)
@@ -559,9 +564,9 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 			else if (!clockwise && grid[positions[1][1] + 1][positions[1][0]] == ' ' && grid[positions[1][1] - 1][positions[1][0]] == ' ')
 			{
 				positions[0][0]--;
-				positions[0][1]++;
+				positions[0][1]--;
 				positions[2][0]++;
-				positions[2][1]--;
+				positions[2][1]++;
 				orientation = desiredOrientation;
 			}
 		}
@@ -654,6 +659,27 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 		break;
 
 	}
+	for (int i = 0; i < 3; i++)
+	{
+		std::cout << "Character " << characters[i] << " is at position {" << positions[i][0] << ", " << positions[i][1] << "}" << std::endl;
+	}
+	std::string orientationString;
+	switch (orientation)
+	{
+	case Up:
+		orientationString = "Up";
+		break;
+	case Right:
+		orientationString = "Right";
+		break;
+	case Down:
+		orientationString = "Down";
+		break;
+	case Left:
+		orientationString = "Left";
+		break;
+	}
+	std::cout << "Piece is in orientation " << orientationString << std::endl;
 }
 
 void Piece::Fix(char grid[GRID_HEIGHT][GRID_WIDTH]) // Need a function to resolve gravity
