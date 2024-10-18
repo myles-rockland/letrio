@@ -68,10 +68,6 @@ Piece::Piece()
 		positions[2][1] = (shape == L) ? 0 : 0;
 		break;
 	}
-	for (int i = 0; i < 3; i++)
-	{
-		std::cout << "Character " << characters[i] << " is at position {" << positions[i][0] << ", " << positions[i][1] << "}" << std::endl;
-	}
 }
 
 bool Piece::Drop(const char grid[GRID_HEIGHT][GRID_WIDTH])
