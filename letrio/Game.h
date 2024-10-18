@@ -4,6 +4,7 @@
 #include "Constants.h"
 #include "Piece.h"
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
@@ -19,12 +20,14 @@ private:
 	void Update();
 	void Render();
 	void CheckWords();
+	bool ValidateWord(const string word);
+	void UpdateScore(const string word);
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	TTF_Font* font;
 	Uint64 startTicks;
-	vector<string> validWords; // Come back to this, might not need to be a vector
+	unordered_map<string, string> validWords;
 	int drops;
 	bool isRunning;
 	bool gameOver;
