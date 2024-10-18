@@ -78,7 +78,7 @@ Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullp
     string word;
     while (getline(wordsAlphaFile, word))
     {
-        if (word.size() >= MIN_WORD_SIZE && word.size() <= MAX_WORD_SIZE)
+        if (word.size() >= MIN_WORD_SIZE)
         {
             for (auto& character : word) character = toupper(character); // Words have to be in upper case
             validWords.insert({word, word});
