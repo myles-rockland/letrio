@@ -78,12 +78,13 @@ Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullp
     string word;
     while (getline(wordsAlphaFile, word))
     {
-        if (word.size() >= MIN_WORD_SIZE)
+        if (word.size() >= MIN_WORD_SIZE && word.size() <= MAX_WORD_SIZE)
         {
             for (auto& character : word) character = toupper(character); // Words have to be in upper case
-            validWords.push_back(word);
+            validWords.insert({word, word});
         }
     }
+    // Need to sort validWords by length
     wordsAlphaFile.close();
     cout << "Valid words loaded" << endl;
 }
@@ -107,7 +108,7 @@ void Game::Run()
         Render();
         Uint64 end = SDL_GetPerformanceCounter();
         float msElapsed = (end - start) / (float) SDL_GetPerformanceFrequency() * 1000.0f;
-        SDL_Delay(16.666f - msElapsed); // Cap the game to 60FPS
+        SDL_Delay(floor(16.666f - msElapsed)); // Cap the game to 60FPS
     }
     CleanUp();
 }
@@ -169,32 +170,35 @@ void Game::HandleInput()
 void Game::Update()
 {
     // If the current piece overlaps with anything, game over
-    if (currentPiece.IsOverlapping(grid))
+    if (!gameOver && currentPiece.IsOverlapping(grid))
     {
+        cout << "Piece overlapped! Game over." << endl;
         gameOver = true;
     }
-    
-    // Drop the current piece every so often, based on speed
-    Uint64 currentTicks = SDL_GetTicks64();
-    Uint64 msSinceInit = currentTicks - startTicks;
-
-    // If the current piece attempts to drop but is blocked, fix it in place
-    if (msSinceInit / speed > drops) // Integer division
+    else
     {
-        drops++;
-        bool didDrop = currentPiece.Drop(grid);
-        if (!didDrop)
+        // Drop the current piece every so often, based on speed
+        Uint64 currentTicks = SDL_GetTicks64();
+        Uint64 msSinceInit = currentTicks - startTicks;
+
+        // If the current piece attempts to drop but is blocked, fix it in place
+        if (msSinceInit / speed > drops) // Integer division
         {
-            currentPiece.Fix(grid);
+            drops++;
+            bool didDrop = currentPiece.Drop(grid);
+            if (!didDrop)
+            {
+                currentPiece.Fix(grid);
 
-            // Check for words and increase score/level/speed if necessary
-            CheckWords();
+                // Check for words and increase score/level/speed if necessary
+                CheckWords();
 
-            currentPiece = nextPiece;
+                currentPiece = nextPiece;
 
-            nextPiece.ChangeLetters();
+                nextPiece.ChangeLetters();
 
-            highScore = (currentScore > highScore) ? currentScore : highScore;
+                highScore = (currentScore > highScore) ? currentScore : highScore;
+            }
         }
     }
 }
@@ -218,16 +222,18 @@ void Game::Render()
     }
 
     // Render characters in grid
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_Color textColor = { 255, 255, 255, 255 };
     for (int i = 0; i < GRID_HEIGHT; i++)
     {
         for (int j = 0; j < GRID_WIDTH; j++)
         {
-            char gridValue = grid[j][i];
+            char gridValue = grid[i][j];
             if (gridValue != ' ')
             {
                 int textX = (j * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
                 int textY = (i * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
-                SDL_Surface* surface = TTF_RenderGlyph_Solid(font, gridValue, { 255, 255, 255, 255 }); // Might need to change text colour
+                SDL_Surface* surface = TTF_RenderGlyph_Solid(font, gridValue, textColor); // Might need to change text colour
                 SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
                 SDL_FreeSurface(surface);
                 SDL_Rect textRect{ textX, textY, FONT_SIZE, FONT_SIZE };
@@ -281,137 +287,151 @@ void Game::Render()
 
 void Game::CheckWords()
 {
-    vector<string> foundWords;
-    vector<vector<vector<int>>> positions; // A vector that stores a vector of "words". A vector of words stores a vector of character positions.
-    
     // Only need to check rows/columns concerned with currentPiece, no need to go through the whole board
     int heightLowerBound = 999;
     int widthLowerBound = 999;
     for (int i = 0; i < 3; i++)
     {
-        heightLowerBound = (currentPiece.positions[i][1] < heightLowerBound) ? currentPiece.positions[i][1] : heightLowerBound;
-        widthLowerBound = (currentPiece.positions[i][0] < widthLowerBound) ? currentPiece.positions[i][0] : widthLowerBound;
+        heightLowerBound = (currentPiece.positions[i][1] < heightLowerBound) ? currentPiece.positions[i][1] : heightLowerBound; // The "lowest" (visually highest) character's y position
+        widthLowerBound = (currentPiece.positions[i][0] < widthLowerBound) ? currentPiece.positions[i][0] : widthLowerBound; // The left-most character's x position
     }
     int heightUpperBound = -1;
     int widthUpperBound = -1;
     for (int i = 0; i < 3; i++)
     {
-        heightUpperBound = (currentPiece.positions[i][1] > heightUpperBound) ? currentPiece.positions[i][1] : heightUpperBound;
-        widthUpperBound = (currentPiece.positions[i][0] > widthUpperBound) ? currentPiece.positions[i][0] : widthUpperBound;
+        heightUpperBound = (currentPiece.positions[i][1] > heightUpperBound) ? currentPiece.positions[i][1] : heightUpperBound; // The "highest" (visually lowest) character's y position
+        widthUpperBound = (currentPiece.positions[i][0] > widthUpperBound) ? currentPiece.positions[i][0] : widthUpperBound; // The right-most character's x position
     }
 
     // Loop through rows
-    for (int i = heightLowerBound; i < heightUpperBound + 1; i++)
+    for (int i = heightLowerBound; i <= heightUpperBound; i++)
     {
         // Loop from left to right
-        string word;
-        for (int j = 0; j < GRID_WIDTH; j++)
+        for (int j = 0; j <= GRID_WIDTH - MIN_WORD_SIZE; j++)
         {
-            if (grid[i][j] != ' ')
+            // Loop backwards through the row to check for bigger words first
+            for (int k = GRID_WIDTH - 1; k >= j + MIN_WORD_SIZE - 1; k--) 
             {
-                word += grid[i][j];
-                vector<int> position = { j, i };
-                vector<vector<int>> wordVector = positions.at(foundWords.size());
-                wordVector.push_back(position);
-            }
-            else if (word != "")
-            {
-                if (word.size() >= MIN_WORD_SIZE)
-                    foundWords.push_back(word);
-                word = "";
+                string potentialWord(grid[i], j, k - j + 1);
+                bool wordIsValid = ValidateWord(potentialWord);
+                if (wordIsValid)
+                {
+                    UpdateScore(potentialWord);
+                    // Remove the word from the grid
+                    for (int l = j; l <= k; l++)
+                    {
+                        grid[i][l] = ' ';
+                    }
+                }
             }
         }
         // Loop from right to left
-        word = "";
-        for (int j = GRID_WIDTH - 1; j >= 0; j--)
+        for (int j = GRID_WIDTH - 1; j >= MIN_WORD_SIZE - 1; j--)
         {
-            if (grid[i][j] != ' ')
+            // Loop frontwards through the row to check for bigger words first
+            for (int k = 0; k <= j - MIN_WORD_SIZE + 1; k++)
             {
-                word += grid[i][j];
-                int wordIndex = foundWords.size() - 1;
-                vector<int> position = { wordIndex, j, i };
-                vector<vector<int>> wordVector = positions.at(foundWords.size());
-                wordVector.push_back(position);
-            }
-            else if (word != "")
-            {
-                if (word.size() >= MIN_WORD_SIZE)
-                    foundWords.push_back(word);
-                word = "";
+                string potentialWord(grid[i], k, j - k + 1);
+                reverse(potentialWord.begin(), potentialWord.end()); // Word needs to be reversed because we want to read the word backwards
+                bool wordIsValid = ValidateWord(potentialWord);
+                if (wordIsValid)
+                {
+                    UpdateScore(potentialWord);
+                    // Remove the word from the grid
+                    for (int l = k; l <= j; l++)
+                    {
+                        grid[i][l] = ' ';
+                    }
+                }
             }
         }
     }
+
+    //cout << "Rows checked" << endl;
 
     // Loop through columns
-    for (int i = widthLowerBound; i < widthUpperBound + 1; i++)
+    for (int i = widthLowerBound; i <= widthUpperBound; i++)
     {
         // Loop from top to bottom
-        string word;
+        string columnOfChars;
         for (int j = 0; j < GRID_HEIGHT; j++)
         {
-            if (grid[j][i] != ' ')
+            columnOfChars += grid[j][i];
+        }
+        // Loop through the columnOfChars string
+        for (int j = 0; j <= columnOfChars.size() - MIN_WORD_SIZE; j++)
+        {
+            // Loop backwards through the column to check for bigger words first
+            for (int k = columnOfChars.size() - 1; k >= j + MIN_WORD_SIZE - 1; k--)
             {
-                word += grid[j][i];
-                int wordIndex = foundWords.size() - 1;
-                vector<int> position = { wordIndex, j, i };
-                vector<vector<int>> wordVector = positions.at(foundWords.size());
-                wordVector.push_back(position);
-            }
-            else if (word != "")
-            {
-                if (word.size() >= MIN_WORD_SIZE)
-                    foundWords.push_back(word);
-                word = "";
+                string potentialWord(columnOfChars, j, k - j + 1);
+                bool wordIsValid = ValidateWord(potentialWord);
+                if (wordIsValid)
+                {
+                    UpdateScore(potentialWord);
+                    // Remove the word from the grid
+                    for (int l = j; l <= k; l++)
+                    {
+                        grid[l][i] = ' ';
+                    }
+                }
             }
         }
+
         // Loop from bottom to top
-        word = "";
+        columnOfChars = "";
         for (int j = GRID_HEIGHT - 1; j >= 0; j--)
         {
-            if (grid[j][i] != ' ')
-            {
-                word += grid[j][i];
-                int wordIndex = foundWords.size() - 1;
-                vector<int> position = { wordIndex, j, i };
-                vector<vector<int>> wordVector = positions.at(foundWords.size());
-                wordVector.push_back(position);
-            }
-            else if (word != "")
-            {
-                if (word.size() >= MIN_WORD_SIZE)
-                    foundWords.push_back(word);
-                word = "";
-            }
+            columnOfChars += grid[j][i];
         }
-    }
-
-    // Loop through validWords and words vector. If valid word is in word in vector, remove the letters from the grid using positions vector
-    for (string validWord : validWords)
-    {
-        for (int i = 0; i < foundWords.size(); i++)
+        // Loop through the columnOfChars string
+        for (int j = 0; j <= columnOfChars.size() - MIN_WORD_SIZE; j++)
         {
-            int index = foundWords[i].find(validWord);
-            if (index != string::npos)
+            // Loop through the column to check for bigger words first
+            for (int k = columnOfChars.size() - 1; k >= j + MIN_WORD_SIZE - 1; k--)
             {
-                // Made a valid word, increase the score and level
-                string reverseWord = validWord;
-                reverse(reverseWord.begin(), reverseWord.end());
-                int bonusMultiplier = (validWord == reverseWord) ? PALINDROME_MULTIPLIER : 1;
-                currentScore += level * bonusMultiplier * validWord.size();
-                wordsMade++;
-                if (wordsMade > level * 5)
+                string potentialWord(columnOfChars, j, k - j + 1);
+                bool wordIsValid = ValidateWord(potentialWord);
+                if (wordIsValid)
                 {
-                    level++;
-                    speed *= 0.9f;
-                }
-                // Remove the valid word's characters on the grid
-                for (int j = index; j < index + validWord.size(); j++)
-                {
-                    vector<int> characterPosition = positions.at(i).at(j);
-                    grid[characterPosition.at(1)][characterPosition.at(0)] = ' ';
+                    UpdateScore(potentialWord);
+                    // Remove the word from the grid
+                    for (int l = j; l <= k; l++)
+                    {
+                        grid[l][i] = ' ';
+                    }
                 }
             }
         }
     }
+    //cout << "Columns checked." << endl;
     // Looping through diagonals might be overpowered and make the game too easy
+}
+
+bool Game::ValidateWord(const string word)
+{
+    if (validWords.find(word) != validWords.end())
+    {
+        cout << "Valid word is " << word << endl;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void Game::UpdateScore(const string word)
+{
+    // Made a valid word, increase the score and level
+    string reverseWord = word;
+    reverse(reverseWord.begin(), reverseWord.end());
+    int bonusMultiplier = (word == reverseWord) ? PALINDROME_MULTIPLIER : 1;
+    currentScore += level * word.size() * bonusMultiplier;
+    wordsMade++;
+    if (wordsMade > level * 5)
+    {
+        level++;
+        speed *= 0.9f;
+    }
 }
