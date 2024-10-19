@@ -10,6 +10,7 @@ const int FONT_SIZE = CELL_LENGTH;
 const int START_SPEED = 1000; // Inversely proportional to level
 const int START_LEVEL = 1; // Might need to be 0.
 const int MIN_WORD_SIZE = 4;
+const int FAST_DROP_MULTIPLIER = 5;
 const int PALINDROME_MULTIPLIER = 2;
 const std::string ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const std::string WORDS_FILE_PATH = "words_alpha.txt";

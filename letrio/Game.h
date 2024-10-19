@@ -26,18 +26,19 @@ private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	TTF_Font* font;
-	Uint64 startTicks;
 	unordered_map<string, string> validWords;
-	int drops;
 	bool isRunning;
 	bool gameOver;
+	bool downPressed;
 	char grid[GRID_HEIGHT][GRID_WIDTH];
 	Piece currentPiece;
 	Piece nextPiece;
 	int currentScore;
 	int highScore;
 	int wordsMade;
+	bool instantDropped;
 	float speed;
+	Uint64 lastDropTicks;
 	int level;
 	// Game will need a way to save high score...
 };

@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullptr), font(nullptr), startTicks(0), currentScore(0), speed(START_SPEED), level(START_LEVEL), drops(0), wordsMade(0), highScore(0)
+Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullptr), font(nullptr), currentScore(0), speed(START_SPEED), level(START_LEVEL), wordsMade(0), highScore(0), downPressed(false), lastDropTicks(0), instantDropped(0)
 {
     // Initialise SDL subsystems
     // Might need to init audio system as well
@@ -55,8 +55,6 @@ Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullp
             grid[i][j] = ' ';
         }
     }
-
-    startTicks = SDL_GetTicks64();
 
     // Read words from the text file into validWords
     ifstream wordsAlphaFile;
@@ -137,14 +135,19 @@ void Game::HandleInput()
             if (state[SDL_SCANCODE_UP]) // Instant Drop
             {
                 currentPiece.DropInstantly(grid);
+                instantDropped = true;
             }
-            if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_DOWN) // Fast Drop
+            if (!downPressed && event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_DOWN) // Fast Drop
             {
-                speed /= 1.3;
+                downPressed = true;
+                speed /= FAST_DROP_MULTIPLIER;
+                cout << "Down Pressed, speed increased to " << speed << endl;
             }
             if (event.type == SDL_KEYUP && event.key.keysym.scancode == SDL_SCANCODE_DOWN) // Reset speed after fast drop
             {
-                speed *= 1.3; // Might need to base this on start speed... don't want floating point errors
+                downPressed = false;
+                speed *= FAST_DROP_MULTIPLIER;
+                cout << "Down Released, speed decreased to " << speed << endl;
             }
             if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_Z) // Need to only activate once
             {
@@ -179,13 +182,14 @@ void Game::Update()
         {
             // Drop the current piece every so often, based on speed
             Uint64 currentTicks = SDL_GetTicks64();
-            Uint64 msSinceInit = currentTicks - startTicks;
+            Uint64 msSinceDrop = currentTicks - lastDropTicks;
 
             // If the current piece attempts to drop but is blocked, fix it in place
-            if (msSinceInit / speed > drops) // Integer division
+            if (msSinceDrop > speed || instantDropped) // If ms since last drop is greater than speed
             {
-                drops++;
+                instantDropped = false;
                 bool didDrop = currentPiece.Drop(grid);
+                lastDropTicks = SDL_GetTicks64();
                 if (!didDrop)
                 {
                     currentPiece.Fix(grid);
