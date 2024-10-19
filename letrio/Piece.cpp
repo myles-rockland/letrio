@@ -229,7 +229,7 @@ void Piece::MoveLeft(const char grid[GRID_HEIGHT][GRID_WIDTH])
 		break;
 	case Right:
 		if ((shape == L && positions[1][0] > 0 && grid[positions[1][1]][positions[1][0] - 1] == ' ' && grid[positions[2][1]][positions[2][0] - 1] == ' ')
-			|| (shape == Line && positions[0][0] > 0 && grid[positions[2][1]][positions[2][0] - 1] == ' '))
+			|| (shape == Line && positions[2][0] > 0 && grid[positions[2][1]][positions[2][0] - 1] == ' '))
 		{
 			for (int i = 0; i < 3; i++)
 			{
@@ -485,7 +485,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 		if (shape == L)
 		{
 			// Attempt to rotate the L
-			if (clockwise && grid[positions[1][1] + 1][positions[1][0]] == ' ')
+			if (clockwise && positions[1][1] + 1 < GRID_HEIGHT && grid[positions[1][1] + 1][positions[1][0]] == ' ')
 			{
 				positions[2][0]--;
 				positions[2][1]++;
@@ -493,7 +493,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[0][1]++;
 				orientation = desiredOrientation;
 			}
-			else if (!clockwise && grid[positions[1][1]][positions[1][0] - 1] == ' ')
+			else if (!clockwise && positions[1][0] - 1 >= 0 && grid[positions[1][1]][positions[1][0] - 1] == ' ')
 			{
 				positions[0][0]--;
 				positions[0][1]++;
@@ -505,7 +505,8 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 		else
 		{
 			// Attempt to rotate the Line
-			if (clockwise && grid[positions[1][1]][positions[1][0] - 1] == ' ' && grid[positions[1][1]][positions[1][0] + 1] == ' ')
+			if (clockwise && positions[1][0] - 1 >= 0 && positions[1][0] + 1 < GRID_WIDTH
+				&& grid[positions[1][1]][positions[1][0] - 1] == ' ' && grid[positions[1][1]][positions[1][0] + 1] == ' ')
 			{
 				positions[2][0]--;
 				positions[2][1]--;
@@ -513,7 +514,8 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[0][1]++;
 				orientation = desiredOrientation;
 			}
-			else if (!clockwise && grid[positions[1][1]][positions[1][0] - 1] == ' ' && grid[positions[1][1]][positions[1][0] + 1] == ' ')
+			else if (!clockwise && positions[1][0] - 1 >= 0 && positions[1][0] + 1 < GRID_WIDTH
+				&& grid[positions[1][1]][positions[1][0] - 1] == ' ' && grid[positions[1][1]][positions[1][0] + 1] == ' ')
 			{
 				positions[0][0]--;
 				positions[0][1]++;
@@ -528,7 +530,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 		if (shape == L)
 		{
 			// Attempt to rotate the L
-			if (clockwise && grid[positions[1][1]][positions[1][0] - 1] == ' ')
+			if (clockwise && positions[1][0] - 1 >= 0 && grid[positions[1][1]][positions[1][0] - 1] == ' ')
 			{
 				positions[2][0]--;
 				positions[2][1]--;
@@ -536,7 +538,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[0][1]++;
 				orientation = desiredOrientation;
 			}
-			else if (!clockwise && grid[positions[1][1] - 1][positions[1][0]] == ' ')
+			else if (!clockwise && positions[1][1] - 1 >= 0 && grid[positions[1][1] - 1][positions[1][0]] == ' ')
 			{
 				positions[0][0]--;
 				positions[0][1]--;
@@ -548,7 +550,8 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 		else
 		{
 			// Attempt to rotate the Line
-			if (clockwise && grid[positions[1][1] + 1][positions[1][0]] == ' ' && grid[positions[1][1] - 1][positions[1][0]] == ' ')
+			if (clockwise && positions[1][1] + 1 < GRID_HEIGHT && positions[1][1] - 1 >= 0
+				&& grid[positions[1][1] + 1][positions[1][0]] == ' ' && grid[positions[1][1] - 1][positions[1][0]] == ' ')
 			{
 				positions[2][0]++;
 				positions[2][1]--;
@@ -556,7 +559,8 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[0][1]++;
 				orientation = desiredOrientation;
 			}
-			else if (!clockwise && grid[positions[1][1] + 1][positions[1][0]] == ' ' && grid[positions[1][1] - 1][positions[1][0]] == ' ')
+			else if (!clockwise && positions[1][1] + 1 < GRID_HEIGHT && positions[1][1] - 1 >= 0
+				&& grid[positions[1][1] + 1][positions[1][0]] == ' ' && grid[positions[1][1] - 1][positions[1][0]] == ' ')
 			{
 				positions[0][0]--;
 				positions[0][1]--;
@@ -571,7 +575,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 		if (shape == L)
 		{
 			// Attempt to rotate the L
-			if (clockwise && grid[positions[1][1] - 1][positions[1][0]] == ' ')
+			if (clockwise && positions[1][1] - 1 >= 0 && grid[positions[1][1] - 1][positions[1][0]] == ' ')
 			{
 				positions[2][0]++;
 				positions[2][1]--;
@@ -579,7 +583,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[0][1]--;
 				orientation = desiredOrientation;
 			}
-			else if (!clockwise && grid[positions[1][1]][positions[1][0] + 1] == ' ')
+			else if (!clockwise && positions[1][0] + 1 < GRID_WIDTH && grid[positions[1][1]][positions[1][0] + 1] == ' ')
 			{
 				positions[0][0]++;
 				positions[0][1]--;
@@ -591,7 +595,8 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 		else
 		{
 			// Attempt to rotate the Line
-			if (clockwise && grid[positions[1][1]][positions[1][0] + 1] == ' ' && grid[positions[1][1]][positions[1][0] - 1] == ' ')
+			if (clockwise && positions[1][0] + 1 < GRID_WIDTH && positions[1][0] - 1 >= 0
+				&& grid[positions[1][1]][positions[1][0] + 1] == ' ' && grid[positions[1][1]][positions[1][0] - 1] == ' ')
 			{
 				positions[2][0]++;
 				positions[2][1]++;
@@ -599,7 +604,8 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[0][1]--;
 				orientation = desiredOrientation;
 			}
-			else if (!clockwise && grid[positions[1][1]][positions[1][0] + 1] == ' ' && grid[positions[1][1]][positions[1][0] - 1] == ' ')
+			else if (!clockwise && positions[1][0] + 1 < GRID_WIDTH && positions[1][0] - 1 >= 0
+				&& grid[positions[1][1]][positions[1][0] + 1] == ' ' && grid[positions[1][1]][positions[1][0] - 1] == ' ')
 			{
 				positions[0][0]++;
 				positions[0][1]--;
@@ -614,7 +620,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 		if (shape == L)
 		{
 			// Attempt to rotate the L
-			if (clockwise && grid[positions[1][1]][positions[1][0] + 1] == ' ')
+			if (clockwise && positions[1][0] + 1 < GRID_WIDTH && grid[positions[1][1]][positions[1][0] + 1] == ' ')
 			{
 				positions[2][0]++;
 				positions[2][1]++;
@@ -622,7 +628,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[0][1]--;
 				orientation = desiredOrientation;
 			}
-			else if (!clockwise && grid[positions[1][1] + 1][positions[1][0]] == ' ')
+			else if (!clockwise && positions[1][1] + 1 < GRID_HEIGHT && grid[positions[1][1] + 1][positions[1][0]] == ' ')
 			{
 				positions[0][0]++;
 				positions[0][1]++;
@@ -634,7 +640,8 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 		else
 		{
 			// Attempt to rotate the Line
-			if (clockwise && grid[positions[1][1] + 1][positions[1][0]] == ' ' && grid[positions[1][1] - 1][positions[1][0]] == ' ')
+			if (clockwise && positions[1][1] + 1 < GRID_HEIGHT && positions[1][1] - 1 >= 0
+				&& grid[positions[1][1] + 1][positions[1][0]] == ' ' && grid[positions[1][1] - 1][positions[1][0]] == ' ')
 			{
 				positions[2][0]--;
 				positions[2][1]++;
@@ -642,7 +649,8 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[0][1]--;
 				orientation = desiredOrientation;
 			}
-			else if (!clockwise && grid[positions[1][1] + 1][positions[1][0]] == ' ' && grid[positions[1][1] - 1][positions[1][0]] == ' ')
+			else if (!clockwise && positions[1][1] + 1 < GRID_HEIGHT && positions[1][1] - 1 >= 0
+				&& grid[positions[1][1] + 1][positions[1][0]] == ' ' && grid[positions[1][1] - 1][positions[1][0]] == ' ')
 			{
 				positions[0][0]++;
 				positions[0][1]++;
