@@ -316,13 +316,13 @@ void Piece::DropInstantly(char grid[GRID_HEIGHT][GRID_WIDTH])
 		{
 			// Drop the shortest distance. Can be optimised probably
 			int distance1 = 0;
-			while (positions[1][1] + 1 + distance1 < GRID_HEIGHT - 1 && grid[positions[1][1] + 1 + distance1][positions[1][0]] != ' ')
+			while (positions[1][1] + 1 + distance1 < GRID_HEIGHT && grid[positions[1][1] + 1 + distance1][positions[1][0]] == ' ')
 			{
 				distance1++;
 			}
 
 			int distance2 = 0;
-			while (positions[2][1] + 1 + distance1 < GRID_HEIGHT - 1 && grid[positions[2][1] + 1 + distance2][positions[2][0]] != ' ')
+			while (positions[2][1] + 1 + distance2 < GRID_HEIGHT && grid[positions[2][1] + 1 + distance2][positions[2][0]] == ' ')
 			{
 				distance2++;
 			}
@@ -337,7 +337,7 @@ void Piece::DropInstantly(char grid[GRID_HEIGHT][GRID_WIDTH])
 		{
 			// Line shape
 			int distance = 0;
-			while (positions[2][1] + 1 + distance < GRID_HEIGHT - 1 && grid[positions[2][1] + 1 + distance][positions[2][0]] != ' ')
+			while (positions[2][1] + 1 + distance < GRID_HEIGHT && grid[positions[2][1] + 1 + distance][positions[2][0]] == ' ')
 			{
 				distance++;
 			}
@@ -352,13 +352,13 @@ void Piece::DropInstantly(char grid[GRID_HEIGHT][GRID_WIDTH])
 		{
 			// Drop the shortest distance
 			int distance1 = 0;
-			while (positions[2][1] + 1 + distance1 < GRID_HEIGHT - 1 && grid[positions[2][1] + 1 + distance1][positions[2][0]] != ' ')
+			while (positions[2][1] + 1 + distance1 < GRID_HEIGHT && grid[positions[2][1] + 1 + distance1][positions[2][0]] == ' ')
 			{
 				distance1++;
 			}
 
 			int distance2 = 0;
-			while (positions[0][1] + 1 + distance1 < GRID_HEIGHT - 1 && grid[positions[0][1] + 1 + distance2][positions[0][0]] != ' ')
+			while (positions[0][1] + 1 + distance2 < GRID_HEIGHT && grid[positions[0][1] + 1 + distance2][positions[0][0]] == ' ')
 			{
 				distance2++;
 			}
@@ -375,7 +375,7 @@ void Piece::DropInstantly(char grid[GRID_HEIGHT][GRID_WIDTH])
 			int distances[3] = {0, 0, 0};
 			for (int i = 0; i < 3; i++)
 			{
-				while (positions[i][1] + 1 + distances[i] < GRID_HEIGHT - 1 && grid[positions[i][1] + 1 + distances[i]][positions[i][0]] != ' ')
+				while (positions[i][1] + 1 + distances[i] < GRID_HEIGHT && grid[positions[i][1] + 1 + distances[i]][positions[i][0]] == ' ')
 				{
 					distances[i]++;
 				}
@@ -396,13 +396,13 @@ void Piece::DropInstantly(char grid[GRID_HEIGHT][GRID_WIDTH])
 		{
 			// Drop the shortest distance
 			int distance1 = 0;
-			while (positions[2][1] + 1 + distance1 < GRID_HEIGHT - 1 && grid[positions[2][1] + 1 + distance1][positions[2][0]] != ' ')
+			while (positions[2][1] + 1 + distance1 < GRID_HEIGHT && grid[positions[2][1] + 1 + distance1][positions[2][0]] == ' ')
 			{
 				distance1++;
 			}
 
 			int distance2 = 0;
-			while (positions[0][1] + 1 + distance1 < GRID_HEIGHT - 1 && grid[positions[0][1] + 1 + distance2][positions[0][0]] != ' ')
+			while (positions[0][1] + 1 + distance2 < GRID_HEIGHT && grid[positions[0][1] + 1 + distance2][positions[0][0]] == ' ')
 			{
 				distance2++;
 			}
@@ -417,7 +417,7 @@ void Piece::DropInstantly(char grid[GRID_HEIGHT][GRID_WIDTH])
 		{
 			// Line shape
 			int distance = 0;
-			while (positions[0][1] + 1 + distance < GRID_HEIGHT - 1 && grid[positions[0][1] + 1 + distance][positions[0][0]] != ' ')
+			while (positions[0][1] + 1 + distance < GRID_HEIGHT && grid[positions[0][1] + 1 + distance][positions[0][0]] == ' ')
 			{
 				distance++;
 			}
@@ -432,13 +432,13 @@ void Piece::DropInstantly(char grid[GRID_HEIGHT][GRID_WIDTH])
 		{
 			// Drop the shortest distance
 			int distance1 = 0;
-			while (positions[0][1] + 1 + distance1 < GRID_HEIGHT - 1 && grid[positions[0][1] + 1 + distance1][positions[0][0]] != ' ')
+			while (positions[0][1] + 1 + distance1 < GRID_HEIGHT && grid[positions[0][1] + 1 + distance1][positions[0][0]] == ' ')
 			{
 				distance1++;
 			}
 
 			int distance2 = 0;
-			while (positions[1][1] + 1 + distance1 < GRID_HEIGHT - 1 && grid[positions[1][1] + 1 + distance2][positions[1][0]] != ' ')
+			while (positions[1][1] + 1 + distance2 < GRID_HEIGHT && grid[positions[1][1] + 1 + distance2][positions[1][0]] == ' ')
 			{
 				distance2++;
 			}
@@ -455,7 +455,7 @@ void Piece::DropInstantly(char grid[GRID_HEIGHT][GRID_WIDTH])
 			int distances[3] = { 0, 0, 0 };
 			for (int i = 0; i < 3; i++)
 			{
-				while (positions[i][1] + 1 + distances[i] < GRID_HEIGHT - 1 && grid[positions[i][1] + 1 + distances[i]][positions[i][0]] != ' ')
+				while (positions[i][1] + 1 + distances[i] < GRID_HEIGHT && grid[positions[i][1] + 1 + distances[i]][positions[i][0]] == ' ')
 				{
 					distances[i]++;
 				}
@@ -476,7 +476,6 @@ void Piece::DropInstantly(char grid[GRID_HEIGHT][GRID_WIDTH])
 
 void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwise)
 {
-	std::cout << "Piece was rotated" << std::endl;
 	// Assume rotation around character at index 1 (characters[1])
 	Orientation desiredOrientation;
 	switch (orientation)
@@ -655,27 +654,6 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 		break;
 
 	}
-	for (int i = 0; i < 3; i++)
-	{
-		std::cout << "Character " << characters[i] << " is at position {" << positions[i][0] << ", " << positions[i][1] << "}" << std::endl;
-	}
-	std::string orientationString;
-	switch (orientation)
-	{
-	case Up:
-		orientationString = "Up";
-		break;
-	case Right:
-		orientationString = "Right";
-		break;
-	case Down:
-		orientationString = "Down";
-		break;
-	case Left:
-		orientationString = "Left";
-		break;
-	}
-	std::cout << "Piece is in orientation " << orientationString << std::endl;
 }
 
 void Piece::Fix(char grid[GRID_HEIGHT][GRID_WIDTH]) // Need a function to resolve gravity
@@ -702,7 +680,7 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 		if (shape == L)
 		{
 			// Change L to Line
-			if (grid[positions[1][1] + 1][positions[1][0]] == ' ')
+			if (positions[1][1] + 1 < GRID_HEIGHT && grid[positions[1][1] + 1][positions[1][0]] == ' ')
 			{
 				positions[2][0]--;
 				positions[2][1]++;
@@ -712,7 +690,7 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 		else
 		{
 			// Change Line to L
-			if (grid[positions[1][1]][positions[1][0] + 1] == ' ')
+			if (positions[1][0] + 1 < GRID_WIDTH && grid[positions[1][1]][positions[1][0] + 1] == ' ')
 			{
 				positions[2][0]++;
 				positions[2][1]--;
@@ -724,7 +702,7 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 		if (shape == L)
 		{
 			// Change L to Line
-			if (grid[positions[1][1]][positions[1][0] - 1] == ' ')
+			if (positions[1][0] - 1 >= 0 && grid[positions[1][1]][positions[1][0] - 1] == ' ')
 			{
 				positions[2][0]--;
 				positions[2][1]--;
@@ -734,7 +712,7 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 		else
 		{
 			// Change Line to L
-			if (grid[positions[1][1] + 1][positions[1][0]] == ' ')
+			if (positions[1][1] + 1 < GRID_HEIGHT && grid[positions[1][1] + 1][positions[1][0]] == ' ')
 			{
 				positions[2][0]++;
 				positions[2][1]++;
@@ -746,7 +724,7 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 		if (shape == L)
 		{
 			// Change L to Line
-			if (grid[positions[1][1] - 1][positions[1][0]] == ' ')
+			if (positions[1][1] - 1 >= 0 && grid[positions[1][1] - 1][positions[1][0]] == ' ')
 			{
 				positions[2][0]++;
 				positions[2][1]--;
@@ -756,7 +734,7 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 		else
 		{
 			// Change Line to L
-			if (grid[positions[1][1]][positions[1][0] - 1] == ' ')
+			if (positions[1][0] - 1 >= 0 && grid[positions[1][1]][positions[1][0] - 1] == ' ')
 			{
 				positions[2][0]--;
 				positions[2][1]++;
@@ -768,7 +746,7 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 		if (shape == L)
 		{
 			// Change L to Line
-			if (grid[positions[1][1]][positions[1][0] + 1] == ' ')
+			if (positions[1][0] + 1 < GRID_WIDTH && grid[positions[1][1]][positions[1][0] + 1] == ' ')
 			{
 				positions[2][0]++;
 				positions[2][1]++;
@@ -778,7 +756,7 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 		else
 		{
 			// Change Line to L
-			if (grid[positions[1][1] - 1][positions[1][0]] == ' ')
+			if (positions[1][1] - 1 >= 0 && grid[positions[1][1] - 1][positions[1][0]] == ' ')
 			{
 				positions[2][0]--;
 				positions[2][1]--;
