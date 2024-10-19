@@ -195,7 +195,9 @@ void Game::Update()
 
                 currentPiece = nextPiece;
 
-                nextPiece.ChangeLetters();
+                Piece newPiece;
+
+                nextPiece = newPiece;
 
                 highScore = (currentScore > highScore) ? currentScore : highScore;
             }
@@ -213,9 +215,9 @@ void Game::Render()
     for (int i = 0; i <= GRID_WIDTH; i++) // Vertical lines
     {
         float xPosition = i * CELL_LENGTH;
-        SDL_RenderDrawLine(renderer, xPosition, 0, xPosition, WINDOW_HEIGHT);
+        SDL_RenderDrawLine(renderer, xPosition, 0, xPosition, CELL_LENGTH * GRID_HEIGHT);
     }
-    for (int i = 0; i < GRID_HEIGHT; i++)
+    for (int i = 0; i <= GRID_HEIGHT; i++)
     {
         float yPosition = i * CELL_LENGTH;
         SDL_RenderDrawLine(renderer, 0, yPosition, CELL_LENGTH * GRID_WIDTH, yPosition);
@@ -233,6 +235,7 @@ void Game::Render()
             {
                 int textX = (j * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
                 int textY = (i * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
+
                 SDL_Surface* surface = TTF_RenderGlyph_Solid(font, gridValue, textColor); // Might need to change text colour
                 SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
                 SDL_FreeSurface(surface);
@@ -249,6 +252,7 @@ void Game::Render()
         char character = currentPiece.GetCharacter(i);
         int textX = (currentPiece.positions[i][0] * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
         int textY = (currentPiece.positions[i][1] * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
+
         SDL_Surface* surface = TTF_RenderGlyph_Solid(font, character, { 255, 255, 255, 255 }); // Might need to change text colour
         SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
@@ -258,12 +262,14 @@ void Game::Render()
     }
 
     // Render nextPiece at top right
-    /*
     for (int i = 0; i < 3; i++)
     {
         char character = nextPiece.GetCharacter(i);
-        int textX = (nextPiece.positions[i][0] * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
+        int gridRightSide = GRID_WIDTH * CELL_LENGTH;
+        int midPoint = gridRightSide + (WINDOW_WIDTH - gridRightSide) / 2 - CELL_LENGTH;
+        int textX = midPoint + (nextPiece.positions[i][0] - 4) * CELL_LENGTH + ((CELL_LENGTH - FONT_SIZE) / 2); // -4 is a magic number here based on grid spawn point positions in Piece constructor
         int textY = (nextPiece.positions[i][1] * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
+
         SDL_Surface* surface = TTF_RenderGlyph_Solid(font, character, { 255, 255, 255, 255 }); // Might need to change text colour
         SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
@@ -271,7 +277,6 @@ void Game::Render()
         SDL_RenderCopy(renderer, texture, NULL, &textRect);
         SDL_DestroyTexture(texture);
     }
-    */
 
     // Render high score 
 
