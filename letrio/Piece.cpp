@@ -2,9 +2,8 @@
 
 using namespace std;
 
-Piece::Piece(std::default_random_engine& generator, vector<int> weights)
+Piece::Piece(std::default_random_engine& generator, std::discrete_distribution<int> distribution)
 {
-	std::discrete_distribution<int> distribution(weights.begin(), weights.end());
 	// Assign characters
 	for (int i = 0; i < 3; i++)
 	{

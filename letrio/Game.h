@@ -27,8 +27,8 @@ private:
 	SDL_Renderer* renderer;
 	TTF_Font* font;
 	std::default_random_engine generator;
+	std::discrete_distribution<int> distribution;
 	unordered_map<string, string> validWords;
-	vector<int> letterWeights;
 	bool isRunning;
 	bool gameOver;
 	bool downPressed;

@@ -7,7 +7,7 @@
 class Piece
 {
 public:
-	Piece(std::default_random_engine& generator, std::vector<int> weights);
+	Piece(std::default_random_engine& generator, std::discrete_distribution<int> distribution);
 	bool Drop(const char grid[GRID_HEIGHT][GRID_WIDTH]);
 	void MoveLeft(const char grid[GRID_HEIGHT][GRID_WIDTH]); // Might need to return a bool to say whether it was successful
 	void MoveRight(const char grid[GRID_HEIGHT][GRID_WIDTH]); // "

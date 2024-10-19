@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullptr), font(nullptr), currentScore(0), speed(START_SPEED), level(START_LEVEL), wordsMade(0), highScore(0), downPressed(false), lastDropTicks(0), instantDropped(0), currentPiece(generator, letterWeights), nextPiece(generator, letterWeights)
+Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullptr), font(nullptr), currentScore(0), speed(START_SPEED), level(START_LEVEL), wordsMade(0), highScore(0), downPressed(false), lastDropTicks(0), instantDropped(0), currentPiece(generator, distribution), nextPiece(generator, distribution)
 {
     // Initialise SDL subsystems
     // Might need to init audio system as well
@@ -96,14 +96,19 @@ Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullp
     wordsAlphaFile.close();
 
     // Initialise letterWeights using characterCounts
+    vector<int> letterWeights;
     for (auto pair : characterCounts)
     {
         letterWeights.push_back(pair.second);
     }
 
-    // Initialise pieces using letterWeights
-    Piece tempCurrent(generator, letterWeights);
-    Piece tempNext(generator, letterWeights);
+    // Initialise distribution using letterWeights
+    std::discrete_distribution<int> tempDistribution(letterWeights.begin(), letterWeights.end());
+    distribution = tempDistribution;
+
+    // Initialise pieces using distribution
+    Piece tempCurrent(generator, distribution);
+    Piece tempNext(generator, distribution);
     currentPiece = tempCurrent;
     nextPiece = tempNext;
 }
@@ -222,7 +227,7 @@ void Game::Update()
                     // Change the current and next pieces
                     currentPiece = nextPiece;
 
-                    Piece newPiece(generator, letterWeights);
+                    Piece newPiece(generator, distribution);
 
                     nextPiece = newPiece;
 
