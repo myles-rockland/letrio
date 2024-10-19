@@ -15,7 +15,6 @@ public:
 	void Fix(char grid[GRID_HEIGHT][GRID_WIDTH]); // Fixes the piece to the grid. Use with currentPiece
 	void ShuffleLetters(); // Shuffle letter positions. Use with currentPiece
 	void ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH]); // Change shape. Use with currentPiece
-	void ChangeLetters(); // Change the letters. Use with nextPiece
 	bool IsOverlapping(const char grid[GRID_HEIGHT][GRID_WIDTH]) const;
 	char GetCharacter(const int index) const;
 	int positions[3][2];

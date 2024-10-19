@@ -789,15 +789,6 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 	}
 }
 
-void Piece::ChangeLetters()
-{
-	for (int i = 0; i < 3; i++)
-	{
-		int randomPos = rand() % ALPHABET.length();
-		characters[i] = ALPHABET[randomPos];
-	}
-}
-
 bool Piece::IsOverlapping(const char grid[GRID_HEIGHT][GRID_WIDTH]) const
 {
 	for (int i = 0; i < 3; i++)
