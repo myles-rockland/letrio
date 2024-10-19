@@ -193,6 +193,7 @@ void Game::Update()
                 // Check for words and increase score/level/speed if necessary
                 CheckWords();
 
+                // Change the current and next pieces
                 currentPiece = nextPiece;
 
                 Piece newPiece;
@@ -266,7 +267,7 @@ void Game::Render()
     {
         char character = nextPiece.GetCharacter(i);
         int gridRightSide = GRID_WIDTH * CELL_LENGTH;
-        int midPoint = gridRightSide + (WINDOW_WIDTH - gridRightSide) / 2 - CELL_LENGTH;
+        int midPoint = gridRightSide + (WINDOW_WIDTH - gridRightSide) / 2 - CELL_LENGTH * 1.5;
         int textX = midPoint + (nextPiece.positions[i][0] - 4) * CELL_LENGTH + ((CELL_LENGTH - FONT_SIZE) / 2); // -4 is a magic number here based on grid spawn point positions in Piece constructor
         int textY = (nextPiece.positions[i][1] * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
 
@@ -279,13 +280,50 @@ void Game::Render()
     }
 
     // Render high score 
+    int gridRightSide = GRID_WIDTH * CELL_LENGTH;
+    int midPoint = gridRightSide + (WINDOW_WIDTH - gridRightSide) / 2;
+    string text = "High Score: " + to_string(highScore);
+    SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), {255, 255, 255, 255}); // Might need to change text colour
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    int textX = midPoint - (surface->w / 2);
+    int textY = 100;
+    SDL_Rect textRect{ textX, textY, surface->w, surface->h };
+    SDL_RenderCopy(renderer, texture, NULL, &textRect);
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
 
     // Render current score
+    text = "Current Score: " + to_string(currentScore);
+    surface = TTF_RenderText_Solid(font, text.c_str(), { 255, 255, 255, 255 }); // Might need to change text colour
+    texture = SDL_CreateTextureFromSurface(renderer, surface);
+    textX = midPoint - (surface->w / 2);
+    textY = 150;
+    textRect = { textX, textY, surface->w, surface->h };
+    SDL_RenderCopy(renderer, texture, NULL, &textRect);
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
 
     // Render level
+    text = "Level: " + to_string(level);
+    surface = TTF_RenderText_Solid(font, text.c_str(), { 255, 255, 255, 255 }); // Might need to change text colour
+    texture = SDL_CreateTextureFromSurface(renderer, surface);
+    textX = midPoint - (surface->w / 2);
+    textY = 200;
+    textRect = { textX, textY, surface->w, surface->h };
+    SDL_RenderCopy(renderer, texture, NULL, &textRect);
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
 
     // Render wordsMade
-
+    text = "Words Made: " + to_string(wordsMade);
+    surface = TTF_RenderText_Solid(font, text.c_str(), { 255, 255, 255, 255 }); // Might need to change text colour
+    texture = SDL_CreateTextureFromSurface(renderer, surface);
+    textX = midPoint - (surface->w / 2);
+    textY = 250;
+    textRect = { textX, textY, surface->w, surface->h };
+    SDL_RenderCopy(renderer, texture, NULL, &textRect);
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
 
     SDL_RenderPresent(renderer);
 }

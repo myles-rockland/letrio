@@ -40,5 +40,4 @@ private:
 	float speed;
 	int level;
 	// Game will need a way to save high score...
-	// Also needs a dictionary of words
 };
