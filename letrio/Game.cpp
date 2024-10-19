@@ -84,9 +84,8 @@ Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullp
             validWords.insert({word, word});
         }
     }
-    // Need to sort validWords by length
+    
     wordsAlphaFile.close();
-    cout << "Valid words loaded" << endl;
 }
 
 void Game::CleanUp()
@@ -169,38 +168,40 @@ void Game::HandleInput()
 
 void Game::Update()
 {
-    // If the current piece overlaps with anything, game over
-    if (!gameOver && currentPiece.IsOverlapping(grid))
+    if (!gameOver)
     {
-        cout << "Piece overlapped! Game over." << endl;
-        gameOver = true;
-    }
-    else
-    {
-        // Drop the current piece every so often, based on speed
-        Uint64 currentTicks = SDL_GetTicks64();
-        Uint64 msSinceInit = currentTicks - startTicks;
-
-        // If the current piece attempts to drop but is blocked, fix it in place
-        if (msSinceInit / speed > drops) // Integer division
+        // If the current piece overlaps with anything, game over
+        if (currentPiece.IsOverlapping(grid))
         {
-            drops++;
-            bool didDrop = currentPiece.Drop(grid);
-            if (!didDrop)
+            gameOver = true;
+        }
+        else
+        {
+            // Drop the current piece every so often, based on speed
+            Uint64 currentTicks = SDL_GetTicks64();
+            Uint64 msSinceInit = currentTicks - startTicks;
+
+            // If the current piece attempts to drop but is blocked, fix it in place
+            if (msSinceInit / speed > drops) // Integer division
             {
-                currentPiece.Fix(grid);
+                drops++;
+                bool didDrop = currentPiece.Drop(grid);
+                if (!didDrop)
+                {
+                    currentPiece.Fix(grid);
 
-                // Check for words and increase score/level/speed if necessary
-                CheckWords();
+                    // Check for words and increase score/level/speed if necessary
+                    CheckWords();
 
-                // Change the current and next pieces
-                currentPiece = nextPiece;
+                    // Change the current and next pieces
+                    currentPiece = nextPiece;
 
-                Piece newPiece;
+                    Piece newPiece;
 
-                nextPiece = newPiece;
+                    nextPiece = newPiece;
 
-                highScore = (currentScore > highScore) ? currentScore : highScore;
+                    highScore = (currentScore > highScore) ? currentScore : highScore;
+                }
             }
         }
     }
@@ -390,8 +391,6 @@ void Game::CheckWords()
         }
     }
 
-    //cout << "Rows checked" << endl;
-
     // Loop through columns
     for (int i = widthLowerBound; i <= widthUpperBound; i++)
     {
@@ -441,21 +440,18 @@ void Game::CheckWords()
                     // Remove the word from the grid
                     for (int l = j; l <= k; l++)
                     {
-                        grid[l][i] = ' ';
+                        grid[GRID_HEIGHT - 1 - l][i] = ' ';
                     }
                 }
             }
         }
     }
-    //cout << "Columns checked." << endl;
-    // Looping through diagonals might be overpowered and make the game too easy
 }
 
 bool Game::ValidateWord(const string word)
 {
     if (validWords.find(word) != validWords.end())
     {
-        cout << "Valid word is " << word << endl;
         return true;
     }
     else
