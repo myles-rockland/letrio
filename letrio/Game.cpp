@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullptr), font(nullptr), currentScore(0), speed(START_SPEED), level(START_LEVEL), wordsMade(0), highScore(0), downPressed(false), lastDropTicks(0), instantDropped(0)
+Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullptr), font(nullptr), currentScore(0), speed(START_SPEED), level(START_LEVEL), wordsMade(0), highScore(0), downPressed(false), lastDropTicks(0), instantDropped(0), currentPiece(generator, letterWeights), nextPiece(generator, letterWeights)
 {
     // Initialise SDL subsystems
     // Might need to init audio system as well
@@ -73,17 +73,39 @@ Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullp
         return;
     }
 
+    // Read valid words from file into validWords map
     string word;
+    unordered_map<char, int> characterCounts;
+    for (char character : ALPHABET)
+    {
+        characterCounts.insert({ character, 0 });
+    }
     while (getline(wordsAlphaFile, word))
     {
         if (word.size() >= MIN_WORD_SIZE)
         {
-            for (auto& character : word) character = toupper(character); // Words have to be in upper case
+            for (auto& character : word)
+            {
+                character = toupper(character); // Words have to be in upper case
+                characterCounts.at(character)++;
+            }
             validWords.insert({word, word});
         }
     }
     
     wordsAlphaFile.close();
+
+    // Initialise letterWeights using characterCounts
+    for (auto pair : characterCounts)
+    {
+        letterWeights.push_back(pair.second);
+    }
+
+    // Initialise pieces using letterWeights
+    Piece tempCurrent(generator, letterWeights);
+    Piece tempNext(generator, letterWeights);
+    currentPiece = tempCurrent;
+    nextPiece = tempNext;
 }
 
 void Game::CleanUp()
@@ -122,7 +144,7 @@ void Game::HandleInput()
             CleanUp();
             exit(0);
         }
-        else
+        else if (!gameOver)
         {
             if (state[SDL_SCANCODE_LEFT])
             {
@@ -200,7 +222,7 @@ void Game::Update()
                     // Change the current and next pieces
                     currentPiece = nextPiece;
 
-                    Piece newPiece;
+                    Piece newPiece(generator, letterWeights);
 
                     nextPiece = newPiece;
 
@@ -456,6 +478,7 @@ bool Game::ValidateWord(const string word)
 {
     if (validWords.find(word) != validWords.end())
     {
+        cout << "Valid word found: " << word << endl;
         return true;
     }
     else

@@ -1,11 +1,14 @@
 #include "Piece.h"
 
-Piece::Piece()
+using namespace std;
+
+Piece::Piece(std::default_random_engine& generator, vector<int> weights)
 {
+	std::discrete_distribution<int> distribution(weights.begin(), weights.end());
 	// Assign characters
 	for (int i = 0; i < 3; i++)
 	{
-		int randomPos = rand() % ALPHABET.length();
+		int randomPos = distribution(generator);
 		characters[i] = ALPHABET[randomPos];
 	}
 
@@ -664,7 +667,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 	}
 }
 
-void Piece::Fix(char grid[GRID_HEIGHT][GRID_WIDTH]) // Need a function to resolve gravity
+void Piece::Fix(char grid[GRID_HEIGHT][GRID_WIDTH]) const // Need a function to resolve gravity
 {
 	for (int i = 0; i < 3; i++)
 	{
