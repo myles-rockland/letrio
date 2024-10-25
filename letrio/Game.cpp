@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullptr), font(nullptr), currentScore(0), speed(START_SPEED), level(START_LEVEL), wordsMade(0), highScore(0), downPressed(false), lastDropTicks(0), instantDropped(0), currentPiece(generator, distribution), nextPiece(generator, distribution)
+Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullptr), font(nullptr), currentScore(0), speed(START_SPEED), level(START_LEVEL), highScore(0), downPressed(false), lastDropTicks(0), instantDropped(0), currentPiece(generator, distribution), nextPiece(generator, distribution)
 {
     // Initialise SDL subsystems
     // Might need to init audio system as well
@@ -274,7 +274,11 @@ void Game::Render()
                 {
                     textColor = { 190, 193, 190, 255 };
                 }
-                int textX = (j * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
+                if (gameOver)
+                {
+                    textColor = { 255, 0, 0, 255 };
+                }
+                int textX = (j * CELL_LENGTH) + 2 + ((CELL_LENGTH - FONT_SIZE) / 2);
                 int textY = (i * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
 
                 SDL_Surface* surface = TTF_RenderGlyph_Solid(font, gridValue, textColor); // Might need to change text colour
@@ -291,7 +295,7 @@ void Game::Render()
     for (int i = 0; i < 3; i++)
     {
         char character = currentPiece.GetCharacter(i);
-        int textX = (currentPiece.positions[i][0] * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
+        int textX = (currentPiece.positions[i][0] * CELL_LENGTH) + 2 + ((CELL_LENGTH - FONT_SIZE) / 2);
         int textY = (currentPiece.positions[i][1] * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
 
         SDL_Surface* surface = TTF_RenderGlyph_Solid(font, character, { 255, 255, 255, 255 }); // Might need to change text colour
@@ -355,7 +359,7 @@ void Game::Render()
     SDL_DestroyTexture(texture);
 
     // Render wordsMade
-    text = "Words Made: " + to_string(wordsMade);
+    text = "Words Made: " + to_string(wordsMade.size());
     surface = TTF_RenderText_Solid(font, text.c_str(), { 255, 255, 255, 255 }); // Might need to change text colour
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     textX = midPoint - (surface->w / 2);
@@ -364,6 +368,20 @@ void Game::Render()
     SDL_RenderCopy(renderer, texture, NULL, &textRect);
     SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture);
+
+    // Render last 3 words of wordsMade
+    for (int i = 0; i < 3 && i < wordsMade.size(); i++)
+    {
+        text = wordsMade.at(wordsMade.size() - 1 - i);
+        surface = TTF_RenderText_Solid(font, text.c_str(), { 255, 255, 255, 255 });
+        texture = SDL_CreateTextureFromSurface(renderer, surface);
+        textX = midPoint - (surface->w / 2);
+        textY = 300 + (i * 20);
+        textRect = { textX, textY, surface->w, surface->h };
+        SDL_RenderCopy(renderer, texture, NULL, &textRect);
+        SDL_FreeSurface(surface);
+        SDL_DestroyTexture(texture);
+    }
 
     SDL_RenderPresent(renderer);
 }
@@ -503,13 +521,15 @@ void Game::CheckWords()
             }
         }
     }
+
+    // Need to recursively check for words again if letters dropped from gravity, but this would cause very sudden chains/combos. Need "animations"
 }
 
 bool Game::ValidateWord(const string word)
 {
     if (validWords.find(word) != validWords.end())
     {
-        cout << "Valid word found: " << word << endl;
+        //cout << "Valid word found: " << word << endl;
         return true;
     }
     else
@@ -521,12 +541,16 @@ bool Game::ValidateWord(const string word)
 void Game::UpdateScore(const string word)
 {
     // Made a valid word, increase the score and level
+    wordsMade.push_back(word);
     string reverseWord = word;
     reverse(reverseWord.begin(), reverseWord.end());
-    int bonusMultiplier = (word == reverseWord) ? PALINDROME_MULTIPLIER : 1;
+    int bonusMultiplier = 1;
+    if (word == reverseWord)
+    {
+        bonusMultiplier = PALINDROME_MULTIPLIER;
+    }
     currentScore += level * word.size() * bonusMultiplier;
-    wordsMade++;
-    if (wordsMade > level * 5)
+    if (wordsMade.size() > level * 5)
     {
         level++;
         speed *= 0.9f;

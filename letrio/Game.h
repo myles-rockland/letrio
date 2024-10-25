@@ -31,6 +31,7 @@ private:
 	std::default_random_engine generator;
 	std::discrete_distribution<int> distribution;
 	unordered_set<string> validWords;
+	vector<string> wordsMade;
 	bool isRunning;
 	bool gameOver;
 	bool downPressed;
@@ -39,7 +40,6 @@ private:
 	Piece nextPiece;
 	int currentScore;
 	int highScore;
-	int wordsMade;
 	bool instantDropped;
 	float speed;
 	Uint64 lastDropTicks;
