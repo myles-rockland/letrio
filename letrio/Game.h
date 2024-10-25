@@ -6,6 +6,7 @@
 #include "Piece.h"
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 
 using namespace std;
 
@@ -29,7 +30,7 @@ private:
 	TTF_Font* font;
 	std::default_random_engine generator;
 	std::discrete_distribution<int> distribution;
-	unordered_map<string, string> validWords;
+	unordered_set<string> validWords;
 	bool isRunning;
 	bool gameOver;
 	bool downPressed;

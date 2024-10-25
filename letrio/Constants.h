@@ -13,4 +13,5 @@ const int MIN_WORD_SIZE = 4;
 const int FAST_DROP_MULTIPLIER = 5;
 const int PALINDROME_MULTIPLIER = 2;
 const std::string ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const std::string VOWELS = "AEIOU";
 const std::string WORDS_FILE_PATH = "words_alpha.txt";

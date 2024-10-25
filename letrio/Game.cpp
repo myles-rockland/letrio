@@ -56,7 +56,7 @@ Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullp
         }
     }
 
-    // Read words from the text file into validWords
+    // Attempt to open words_alpha.txt
     ifstream wordsAlphaFile;
     try
     {
@@ -89,7 +89,7 @@ Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullp
                 character = toupper(character); // Words have to be in upper case
                 characterCounts.at(character)++;
             }
-            validWords.insert({word, word});
+            validWords.insert(word);
         }
     }
     
@@ -258,7 +258,7 @@ void Game::Render()
 
     // Render characters in grid
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_Color textColor = { 255, 255, 255, 255 };
+    SDL_Color textColor = { 190, 193, 190, 255 };
     for (int i = 0; i < GRID_HEIGHT; i++)
     {
         for (int j = 0; j < GRID_WIDTH; j++)
@@ -266,6 +266,14 @@ void Game::Render()
             char gridValue = grid[i][j];
             if (gridValue != ' ')
             {
+                if (VOWELS.find(gridValue) != string::npos)
+                {
+                    textColor = { 241, 240, 170, 255 };
+                }
+                else
+                {
+                    textColor = { 190, 193, 190, 255 };
+                }
                 int textX = (j * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
                 int textY = (i * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
 
