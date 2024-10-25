@@ -486,10 +486,10 @@ void Game::CheckWords()
         }
     }
 
-    // Loop through all columns to drop letters down
+    // Loop through all columns to drop letters down using "gravity"
     for (int i = 0; i < GRID_WIDTH; i++)
     {
-        for (int j = GRID_HEIGHT - 1; j > 0; j--)
+        for (int j = GRID_HEIGHT - 1; j >= 0; j--)
         {
             if (grid[j][i] != ' ' && grid[j + 1][i] == ' ')
             {
