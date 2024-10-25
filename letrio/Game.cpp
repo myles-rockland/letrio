@@ -250,7 +250,7 @@ void Game::Render()
         float xPosition = i * CELL_LENGTH;
         SDL_RenderDrawLine(renderer, xPosition, 0, xPosition, CELL_LENGTH * GRID_HEIGHT);
     }
-    for (int i = 0; i <= GRID_HEIGHT; i++)
+    for (int i = 0; i <= GRID_HEIGHT; i++) // Horizontal lines
     {
         float yPosition = i * CELL_LENGTH;
         SDL_RenderDrawLine(renderer, 0, yPosition, CELL_LENGTH * GRID_WIDTH, yPosition);
@@ -358,7 +358,7 @@ void Game::Render()
     SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture);
 
-    // Render wordsMade
+    // Render number of wordsMade
     text = "Words Made: " + to_string(wordsMade.size());
     surface = TTF_RenderText_Solid(font, text.c_str(), { 255, 255, 255, 255 }); // Might need to change text colour
     texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -376,7 +376,21 @@ void Game::Render()
         surface = TTF_RenderText_Solid(font, text.c_str(), { 255, 255, 255, 255 });
         texture = SDL_CreateTextureFromSurface(renderer, surface);
         textX = midPoint - (surface->w / 2);
-        textY = 300 + (i * 20);
+        textY = 300 + (i * FONT_SIZE);
+        textRect = { textX, textY, surface->w, surface->h };
+        SDL_RenderCopy(renderer, texture, NULL, &textRect);
+        SDL_FreeSurface(surface);
+        SDL_DestroyTexture(texture);
+    }
+
+    // Render game over text if game is over
+    if (gameOver)
+    {
+        text = "Game Over!";
+        surface = TTF_RenderText_Solid(font, text.c_str(), { 255, 0, 0, 255 });
+        texture = SDL_CreateTextureFromSurface(renderer, surface);
+        textX = midPoint - (surface->w / 2);
+        textY = WINDOW_HEIGHT - FONT_SIZE;
         textRect = { textX, textY, surface->w, surface->h };
         SDL_RenderCopy(renderer, texture, NULL, &textRect);
         SDL_FreeSurface(surface);
