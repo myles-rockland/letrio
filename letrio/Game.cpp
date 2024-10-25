@@ -485,6 +485,24 @@ void Game::CheckWords()
             }
         }
     }
+
+    // Loop through all columns to drop letters down
+    for (int i = 0; i < GRID_WIDTH; i++)
+    {
+        for (int j = GRID_HEIGHT - 1; j > 0; j--)
+        {
+            if (grid[j][i] != ' ' && grid[j + 1][i] == ' ')
+            {
+                int k = j;
+                while (k < GRID_HEIGHT - 1 && grid[k + 1][i] == ' ')
+                {
+                    k++;
+                }
+                grid[k][i] = grid[j][i];
+                grid[j][i] = ' ';
+            }
+        }
+    }
 }
 
 bool Game::ValidateWord(const string word)
