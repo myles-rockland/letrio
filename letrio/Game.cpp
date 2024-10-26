@@ -316,7 +316,7 @@ void Game::Render()
             {
                 if (VOWELS.find(gridValue) != string::npos)
                 {
-                    textColor = { 241, 240, 170, 255 };
+                    textColor = { 212, 157, 41, 255 };
                 }
                 else
                 {
@@ -326,14 +326,16 @@ void Game::Render()
                 {
                     textColor = { 255, 0, 0, 255 };
                 }
-                int textX = (j * CELL_LENGTH) + 2 + ((CELL_LENGTH - FONT_SIZE) / 2);
-                int textY = (i * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
 
                 SDL_Surface* surface = TTF_RenderGlyph_Solid(font, gridValue, textColor); // Might need to change text colour
                 SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-                SDL_FreeSurface(surface);
-                SDL_Rect textRect{ textX, textY, FONT_SIZE, FONT_SIZE };
+
+                int textX = (j * CELL_LENGTH) + ((CELL_LENGTH - surface->w) / 2);
+                int textY = (i * CELL_LENGTH) + ((CELL_LENGTH - surface->h) / 2);
+                
+                SDL_Rect textRect{ textX, textY, surface->w, surface->h };
                 SDL_RenderCopy(renderer, texture, NULL, &textRect);
+                SDL_FreeSurface(surface);
                 SDL_DestroyTexture(texture);
             }
         }
@@ -343,14 +345,17 @@ void Game::Render()
     for (int i = 0; i < 3; i++)
     {
         char character = currentPiece.GetCharacter(i);
-        int textX = (currentPiece.positions[i][0] * CELL_LENGTH) + 2 + ((CELL_LENGTH - FONT_SIZE) / 2);
-        int textY = (currentPiece.positions[i][1] * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
 
         SDL_Surface* surface = TTF_RenderGlyph_Solid(font, character, { 255, 255, 255, 255 }); // Might need to change text colour
         SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-        SDL_FreeSurface(surface);
-        SDL_Rect textRect{ textX, textY, FONT_SIZE, FONT_SIZE };
+
+        int textX = (currentPiece.positions[i][0] * CELL_LENGTH) + 2 + ((CELL_LENGTH - surface->w) / 2);
+        int textY = (currentPiece.positions[i][1] * CELL_LENGTH) + ((CELL_LENGTH - surface->h) / 2);
+
+        
+        SDL_Rect textRect{ textX, textY, surface->w, surface->h };
         SDL_RenderCopy(renderer, texture, NULL, &textRect);
+        SDL_FreeSurface(surface);
         SDL_DestroyTexture(texture);
     }
 
@@ -360,14 +365,16 @@ void Game::Render()
         char character = nextPiece.GetCharacter(i);
         int gridRightSide = GRID_WIDTH * CELL_LENGTH;
         int midPoint = gridRightSide + (WINDOW_WIDTH - gridRightSide) / 2 - CELL_LENGTH;
-        int textX = midPoint + 2 + (nextPiece.positions[i][0] - 4) * CELL_LENGTH + ((CELL_LENGTH - FONT_SIZE) / 2); // -4 is a magic number here based on grid spawn point positions in Piece constructor
-        int textY = (WINDOW_HEIGHT / 20) + (nextPiece.positions[i][1] * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
 
         SDL_Surface* surface = TTF_RenderGlyph_Solid(font, character, { 255, 255, 255, 255 }); // Might need to change text colour
         SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-        SDL_FreeSurface(surface);
-        SDL_Rect textRect{ textX, textY, FONT_SIZE, FONT_SIZE };
+
+        int textX = midPoint + 2 + (nextPiece.positions[i][0] - 4) * CELL_LENGTH + ((CELL_LENGTH - surface->w) / 2); // -4 is a magic number here based on grid spawn point positions in Piece constructor
+        int textY = (WINDOW_HEIGHT / 20) + (nextPiece.positions[i][1] * CELL_LENGTH) + ((CELL_LENGTH - surface->h) / 2);
+
+        SDL_Rect textRect{ textX, textY, surface->w, surface->h };
         SDL_RenderCopy(renderer, texture, NULL, &textRect);
+        SDL_FreeSurface(surface);
         SDL_DestroyTexture(texture);
     }
 
