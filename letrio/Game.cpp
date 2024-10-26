@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullptr), font(nullptr), currentScore(0), speed(START_SPEED), level(START_LEVEL), highScore(0), downPressed(false), lastDropTicks(0), instantDropped(0), currentPiece(generator, distribution), nextPiece(generator, distribution)
+Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullptr), font(nullptr), engine(nullptr), bgMusic(nullptr), currentScore(0), speed(START_SPEED), level(START_LEVEL), highScore(0), downPressed(false), lastDropTicks(0), instantDropped(0), currentPiece(generator, distribution), nextPiece(generator, distribution)
 {
     // Initialise SDL subsystems
     // Might need to init audio system as well
@@ -122,13 +122,21 @@ Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullp
         return;
     }
 
-    // Start playing the music
-    engine->play2D("letrio.ogg", true);
+    // Start playing the background music
+    bgMusic = engine->play2D("./audio/letrio-main-theme-rondeau.ogg", true, false, true);
+
+    if (!bgMusic)
+    {
+        cerr << "Error: failed to play background music." << endl;
+        isRunning = false;
+        return;
+    }
 
 }
 
 void Game::CleanUp()
 {
+    bgMusic->drop();
     engine->drop();
     TTF_CloseFont(font);
     TTF_Quit();
@@ -219,6 +227,8 @@ void Game::Update()
         if (currentPiece.IsOverlapping(grid))
         {
             gameOver = true;
+            bgMusic->stop();
+            engine->play2D("./audio/letrio-game-over.ogg");
         }
         else
         {

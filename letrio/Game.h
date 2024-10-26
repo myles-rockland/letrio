@@ -29,6 +29,7 @@ private:
 	SDL_Renderer* renderer;
 	TTF_Font* font;
 	irrklang::ISoundEngine* engine;
+	irrklang::ISound* bgMusic;
 	std::default_random_engine generator;
 	std::discrete_distribution<int> distribution;
 	unordered_set<string> validWords;
