@@ -215,7 +215,7 @@ bool Piece::Drop(const char grid[GRID_HEIGHT][GRID_WIDTH])
 	}
 }
 
-void Piece::MoveLeft(const char grid[GRID_HEIGHT][GRID_WIDTH])
+bool Piece::MoveLeft(const char grid[GRID_HEIGHT][GRID_WIDTH])
 {
 	switch (orientation)
 	{
@@ -227,6 +227,7 @@ void Piece::MoveLeft(const char grid[GRID_HEIGHT][GRID_WIDTH])
 			{
 				positions[i][0]--;
 			}
+			return true;
 		}
 		break;
 	case Right:
@@ -237,6 +238,7 @@ void Piece::MoveLeft(const char grid[GRID_HEIGHT][GRID_WIDTH])
 			{
 				positions[i][0]--;
 			}
+			return true;
 		}
 		break;
 	case Down:
@@ -247,6 +249,7 @@ void Piece::MoveLeft(const char grid[GRID_HEIGHT][GRID_WIDTH])
 			{
 				positions[i][0]--;
 			}
+			return true;
 		}
 		break;
 	case Left:
@@ -257,12 +260,14 @@ void Piece::MoveLeft(const char grid[GRID_HEIGHT][GRID_WIDTH])
 			{
 				positions[i][0]--;
 			}
+			return true;
 		}
 		break;
 	}
+	return false;
 }
 
-void Piece::MoveRight(const char grid[GRID_HEIGHT][GRID_WIDTH])
+bool Piece::MoveRight(const char grid[GRID_HEIGHT][GRID_WIDTH])
 {
 	switch (orientation)
 	{
@@ -274,6 +279,7 @@ void Piece::MoveRight(const char grid[GRID_HEIGHT][GRID_WIDTH])
 			{
 				positions[i][0]++;
 			}
+			return true;
 		}
 		break;
 	case Right:
@@ -284,6 +290,7 @@ void Piece::MoveRight(const char grid[GRID_HEIGHT][GRID_WIDTH])
 			{
 				positions[i][0]++;
 			}
+			return true;
 		}
 		break;
 	case Down:
@@ -294,6 +301,7 @@ void Piece::MoveRight(const char grid[GRID_HEIGHT][GRID_WIDTH])
 			{
 				positions[i][0]++;
 			}
+			return true;
 		}
 		break;
 	case Left:
@@ -304,9 +312,11 @@ void Piece::MoveRight(const char grid[GRID_HEIGHT][GRID_WIDTH])
 			{
 				positions[i][0]++;
 			}
+			return true;
 		}
 		break;
 	}
+	return false;
 }
 
 void Piece::DropInstantly(char grid[GRID_HEIGHT][GRID_WIDTH])
@@ -476,7 +486,7 @@ void Piece::DropInstantly(char grid[GRID_HEIGHT][GRID_WIDTH])
 	}
 }
 
-void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwise)
+bool Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwise)
 {
 	// Assume rotation around character at index 1 (characters[1])
 	Orientation desiredOrientation;
@@ -494,6 +504,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[0][0]++;
 				positions[0][1]++;
 				orientation = desiredOrientation;
+				return true;
 			}
 			else if (!clockwise && positions[1][0] - 1 >= 0 && grid[positions[1][1]][positions[1][0] - 1] == ' ')
 			{
@@ -502,6 +513,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[2][0]--;
 				positions[2][1]--;
 				orientation = desiredOrientation;
+				return true;
 			}
 		}
 		else
@@ -515,6 +527,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[0][0]++;
 				positions[0][1]++;
 				orientation = desiredOrientation;
+				return true;
 			}
 			else if (!clockwise && positions[1][0] - 1 >= 0 && positions[1][0] + 1 < GRID_WIDTH
 				&& grid[positions[1][1]][positions[1][0] - 1] == ' ' && grid[positions[1][1]][positions[1][0] + 1] == ' ')
@@ -524,6 +537,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[2][0]++;
 				positions[2][1]--;
 				orientation = desiredOrientation;
+				return true;
 			}
 		}
 		break;
@@ -539,6 +553,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[0][0]--;
 				positions[0][1]++;
 				orientation = desiredOrientation;
+				return true;
 			}
 			else if (!clockwise && positions[1][1] - 1 >= 0 && grid[positions[1][1] - 1][positions[1][0]] == ' ')
 			{
@@ -547,6 +562,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[2][0]++;
 				positions[2][1]--;
 				orientation = desiredOrientation;
+				return true;
 			}
 		}
 		else
@@ -560,6 +576,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[0][0]--;
 				positions[0][1]++;
 				orientation = desiredOrientation;
+				return true;
 			}
 			else if (!clockwise && positions[1][1] + 1 < GRID_HEIGHT && positions[1][1] - 1 >= 0
 				&& grid[positions[1][1] + 1][positions[1][0]] == ' ' && grid[positions[1][1] - 1][positions[1][0]] == ' ')
@@ -569,6 +586,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[2][0]++;
 				positions[2][1]++;
 				orientation = desiredOrientation;
+				return true;
 			}
 		}
 		break;
@@ -584,6 +602,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[0][0]--;
 				positions[0][1]--;
 				orientation = desiredOrientation;
+				return true;
 			}
 			else if (!clockwise && positions[1][0] + 1 < GRID_WIDTH && grid[positions[1][1]][positions[1][0] + 1] == ' ')
 			{
@@ -592,6 +611,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[2][0]++;
 				positions[2][1]++;
 				orientation = desiredOrientation;
+				return true;
 			}
 		}
 		else
@@ -605,6 +625,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[0][0]--;
 				positions[0][1]--;
 				orientation = desiredOrientation;
+				return true;
 			}
 			else if (!clockwise && positions[1][0] + 1 < GRID_WIDTH && positions[1][0] - 1 >= 0
 				&& grid[positions[1][1]][positions[1][0] + 1] == ' ' && grid[positions[1][1]][positions[1][0] - 1] == ' ')
@@ -614,6 +635,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[2][0]--;
 				positions[2][1]++;
 				orientation = desiredOrientation;
+				return true;
 			}
 		}
 		break;
@@ -629,6 +651,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[0][0]++;
 				positions[0][1]--;
 				orientation = desiredOrientation;
+				return true;
 			}
 			else if (!clockwise && positions[1][1] + 1 < GRID_HEIGHT && grid[positions[1][1] + 1][positions[1][0]] == ' ')
 			{
@@ -637,6 +660,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[2][0]--;
 				positions[2][1]++;
 				orientation = desiredOrientation;
+				return true;
 			}
 		}
 		else
@@ -650,6 +674,7 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[0][0]++;
 				positions[0][1]--;
 				orientation = desiredOrientation;
+				return true;
 			}
 			else if (!clockwise && positions[1][1] + 1 < GRID_HEIGHT && positions[1][1] - 1 >= 0
 				&& grid[positions[1][1] + 1][positions[1][0]] == ' ' && grid[positions[1][1] - 1][positions[1][0]] == ' ')
@@ -659,11 +684,13 @@ void Piece::Rotate(const char grid[GRID_HEIGHT][GRID_WIDTH], const bool clockwis
 				positions[2][0]--;
 				positions[2][1]--;
 				orientation = desiredOrientation;
+				return true;
 			}
 		}
 		break;
 
 	}
+	return false;
 }
 
 void Piece::Fix(char grid[GRID_HEIGHT][GRID_WIDTH]) const // Need a function to resolve gravity
@@ -682,7 +709,7 @@ void Piece::ShuffleLetters()
 	characters[2] = temp;
 }
 
-void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
+bool Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 {
 	switch (orientation)
 	{
@@ -695,6 +722,7 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 				positions[2][0]--;
 				positions[2][1]++;
 				shape = Line;
+				return true;
 			}
 		}
 		else
@@ -705,6 +733,7 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 				positions[2][0]++;
 				positions[2][1]--;
 				shape = L;
+				return true;
 			}
 		}
 		break;
@@ -717,6 +746,7 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 				positions[2][0]--;
 				positions[2][1]--;
 				shape = Line;
+				return true;
 			}
 		}
 		else
@@ -727,6 +757,7 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 				positions[2][0]++;
 				positions[2][1]++;
 				shape = L;
+				return true;
 			}
 		}
 		break;
@@ -739,6 +770,7 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 				positions[2][0]++;
 				positions[2][1]--;
 				shape = Line;
+				return true;
 			}
 		}
 		else
@@ -749,6 +781,7 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 				positions[2][0]--;
 				positions[2][1]++;
 				shape = L;
+				return true;
 			}
 		}
 		break;
@@ -761,6 +794,7 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 				positions[2][0]++;
 				positions[2][1]++;
 				shape = Line;
+				return true;
 			}
 		}
 		else
@@ -771,10 +805,12 @@ void Piece::ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH])
 				positions[2][0]--;
 				positions[2][1]--;
 				shape = L;
+				return true;
 			}
 		}
 		break;
 	}
+	return false;
 }
 
 bool Piece::IsOverlapping(const char grid[GRID_HEIGHT][GRID_WIDTH]) const

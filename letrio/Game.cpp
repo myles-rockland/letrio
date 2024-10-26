@@ -176,13 +176,15 @@ void Game::HandleInput()
         {
             if (state[SDL_SCANCODE_LEFT])
             {
-                currentPiece.MoveLeft(grid);
-                engine->play2D("./audio/sfx-move-piece-left.ogg");
+                bool movedLeft = currentPiece.MoveLeft(grid);
+                if (movedLeft)
+                    engine->play2D("./audio/sfx-move-piece-left.ogg");
             }
             if (state[SDL_SCANCODE_RIGHT])
             {
-                currentPiece.MoveRight(grid);
-                engine->play2D("./audio/sfx-move-piece-right.ogg");
+                bool movedRight = currentPiece.MoveRight(grid);
+                if (movedRight)
+                    engine->play2D("./audio/sfx-move-piece-right.ogg");
             }
             if (state[SDL_SCANCODE_UP]) // Instant Drop
             {
@@ -204,13 +206,15 @@ void Game::HandleInput()
             }
             if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_Z) // Need to only activate once
             {
-                currentPiece.Rotate(grid, false);
-                engine->play2D("./audio/sfx-rotate-piece-left.ogg");
+                bool rotatedLeft = currentPiece.Rotate(grid, false);
+                if (rotatedLeft)
+                    engine->play2D("./audio/sfx-rotate-piece-left.ogg");
             }
             if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_X)
             {
-                currentPiece.Rotate(grid);
-                engine->play2D("./audio/sfx-rotate-piece-right.ogg");
+                bool rotatedRight = currentPiece.Rotate(grid);
+                if (rotatedRight)
+                    engine->play2D("./audio/sfx-rotate-piece-right.ogg");
             }
             if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_C)
             {
@@ -219,8 +223,9 @@ void Game::HandleInput()
             }
             if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_SPACE)
             {
-                currentPiece.ChangeShape(grid);
-                engine->play2D("./audio/sfx-change-piece-shape.ogg");
+                bool changedShape = currentPiece.ChangeShape(grid);
+                if (changedShape)
+                    engine->play2D("./audio/sfx-change-piece-shape.ogg");
             }
         }
     }
