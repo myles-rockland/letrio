@@ -138,7 +138,11 @@ Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullp
 
 void Game::CleanUp()
 {
-    if (bgMusic) { bgMusic->drop(); }
+    if (bgMusic) 
+    { 
+        bgMusic->drop(); 
+        bgMusic = 0;
+    }
     engine->drop();
     TTF_CloseFont(font);
     TTF_Quit();
@@ -242,7 +246,13 @@ void Game::Update()
         {
             gameOver = true;
             bgMusic->stop();
-            engine->play2D("./audio/mus-game-over.ogg");
+            irrklang::ISound* musGameOver = engine->play2D("./audio/mus-game-over.ogg", false, false, true);
+            if (musGameOver)
+            {
+                musGameOver->setVolume(0.6f);
+                musGameOver->drop();
+                musGameOver = 0;
+            }
         }
         else
         {
