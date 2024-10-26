@@ -489,26 +489,6 @@ void Game::CheckWords()
                 }
             }
         }
-        // Loop from right to left
-        for (int j = GRID_WIDTH - 1; j >= MIN_WORD_SIZE - 1; j--)
-        {
-            // Loop frontwards through the row to check for bigger words first
-            for (int k = 0; k <= j - MIN_WORD_SIZE + 1; k++)
-            {
-                string potentialWord(grid[i], k, j - k + 1);
-                reverse(potentialWord.begin(), potentialWord.end()); // Word needs to be reversed because we want to read the word backwards
-                bool wordIsValid = ValidateWord(potentialWord);
-                if (wordIsValid)
-                {
-                    UpdateScore(potentialWord);
-                    // Remove the word from the grid
-                    for (int l = k; l <= j; l++)
-                    {
-                        grid[i][l] = ' ';
-                    }
-                }
-            }
-        }
     }
 
     // Loop through columns
@@ -535,32 +515,6 @@ void Game::CheckWords()
                     for (int l = j; l <= k; l++)
                     {
                         grid[l][i] = ' ';
-                    }
-                }
-            }
-        }
-
-        // Loop from bottom to top
-        columnOfChars = "";
-        for (int j = GRID_HEIGHT - 1; j >= 0; j--)
-        {
-            columnOfChars += grid[j][i];
-        }
-        // Loop through the columnOfChars string
-        for (int j = 0; j <= columnOfChars.size() - MIN_WORD_SIZE; j++)
-        {
-            // Loop through the column to check for bigger words first
-            for (int k = columnOfChars.size() - 1; k >= j + MIN_WORD_SIZE - 1; k--)
-            {
-                string potentialWord(columnOfChars, j, k - j + 1);
-                bool wordIsValid = ValidateWord(potentialWord);
-                if (wordIsValid)
-                {
-                    UpdateScore(potentialWord);
-                    // Remove the word from the grid
-                    for (int l = j; l <= k; l++)
-                    {
-                        grid[GRID_HEIGHT - 1 - l][i] = ' ';
                     }
                 }
             }
