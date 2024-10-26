@@ -149,7 +149,7 @@ void Game::CleanUp()
 
 void Game::Run()
 {
-    while (isRunning) // Makes the IsRunning method useless?
+    while (isRunning)
     {
         Uint64 start = SDL_GetPerformanceCounter();
         HandleInput();
@@ -182,7 +182,7 @@ void Game::HandleInput()
                 if (movedLeft)
                     engine->play2D("./audio/sfx-move-piece-left.ogg");
             }
-            if (state[SDL_SCANCODE_RIGHT])
+            else if (state[SDL_SCANCODE_RIGHT])
             {
                 bool movedRight = currentPiece.MoveRight(grid);
                 if (movedRight)
@@ -212,7 +212,7 @@ void Game::HandleInput()
                 if (rotatedLeft)
                     engine->play2D("./audio/sfx-rotate-piece-left.ogg");
             }
-            if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_X)
+            else if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_X)
             {
                 bool rotatedRight = currentPiece.Rotate(grid);
                 if (rotatedRight)
