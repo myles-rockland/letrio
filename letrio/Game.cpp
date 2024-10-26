@@ -291,9 +291,9 @@ void Game::Render()
 {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
     // Render grid
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     for (int i = 0; i <= GRID_WIDTH; i++) // Vertical lines
     {
         float xPosition = i * CELL_LENGTH;
@@ -306,7 +306,6 @@ void Game::Render()
     }
 
     // Render characters in grid
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_Color textColor = { 190, 193, 190, 255 };
     for (int i = 0; i < GRID_HEIGHT; i++)
     {
@@ -360,9 +359,9 @@ void Game::Render()
     {
         char character = nextPiece.GetCharacter(i);
         int gridRightSide = GRID_WIDTH * CELL_LENGTH;
-        int midPoint = gridRightSide + (WINDOW_WIDTH - gridRightSide) / 2 - CELL_LENGTH * 1.5;
-        int textX = midPoint + (nextPiece.positions[i][0] - 4) * CELL_LENGTH + ((CELL_LENGTH - FONT_SIZE) / 2); // -4 is a magic number here based on grid spawn point positions in Piece constructor
-        int textY = (nextPiece.positions[i][1] * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
+        int midPoint = gridRightSide + (WINDOW_WIDTH - gridRightSide) / 2 - CELL_LENGTH;
+        int textX = midPoint + 2 + (nextPiece.positions[i][0] - 4) * CELL_LENGTH + ((CELL_LENGTH - FONT_SIZE) / 2); // -4 is a magic number here based on grid spawn point positions in Piece constructor
+        int textY = (WINDOW_HEIGHT / 20) + (nextPiece.positions[i][1] * CELL_LENGTH) + ((CELL_LENGTH - FONT_SIZE) / 2);
 
         SDL_Surface* surface = TTF_RenderGlyph_Solid(font, character, { 255, 255, 255, 255 }); // Might need to change text colour
         SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -372,15 +371,43 @@ void Game::Render()
         SDL_DestroyTexture(texture);
     }
 
-    // Render high score 
+    // Render grid around nextPiece
+    for (int i = 0; i <= 4; i++) // Vertical lines
+    {
+        int gridRightSide = GRID_WIDTH * CELL_LENGTH;
+        int midPoint = gridRightSide + (WINDOW_WIDTH - gridRightSide) / 2 - CELL_LENGTH * 2;
+        float xPosition = midPoint + i * CELL_LENGTH;
+        SDL_RenderDrawLine(renderer, xPosition, (WINDOW_HEIGHT / 20), xPosition, (WINDOW_HEIGHT / 20) + CELL_LENGTH * 3);
+    }
+    for (int i = 0; i <= 3; i++) // Horizontal lines
+    {
+        int gridRightSide = GRID_WIDTH * CELL_LENGTH;
+        int midPoint = gridRightSide + (WINDOW_WIDTH - gridRightSide) / 2 - CELL_LENGTH * 2;
+        float yPosition = (WINDOW_HEIGHT / 20) + i * CELL_LENGTH;
+        SDL_RenderDrawLine(renderer, midPoint, yPosition, midPoint + CELL_LENGTH * 4, yPosition);
+    }
+
+    // Render NEXT next to nextPiece grid
     int gridRightSide = GRID_WIDTH * CELL_LENGTH;
     int midPoint = gridRightSide + (WINDOW_WIDTH - gridRightSide) / 2;
-    string text = "High Score: " + to_string(highScore);
-    SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), {255, 255, 255, 255}); // Might need to change text colour
+    string text = "NEXT:";
+    SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), { 255, 255, 255, 255 }); // Might need to change text colour
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    int textX = midPoint - (surface->w / 2);
-    int textY = WINDOW_HEIGHT / 8 * 2;
+    int nextMidpoint = gridRightSide + ((midPoint - (2 * CELL_LENGTH) - gridRightSide) / 2);
+    int textX = nextMidpoint - (surface->w / 2);
+    int textY = WINDOW_HEIGHT / 20 + CELL_LENGTH;
     SDL_Rect textRect{ textX, textY, surface->w, surface->h };
+    SDL_RenderCopy(renderer, texture, NULL, &textRect);
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
+
+    // Render high score
+    text = "High Score: " + to_string(highScore);
+    surface = TTF_RenderText_Solid(font, text.c_str(), {255, 255, 255, 255}); // Might need to change text colour
+    texture = SDL_CreateTextureFromSurface(renderer, surface);
+    textX = midPoint - (surface->w / 2);
+    textY = WINDOW_HEIGHT / 8 * 2;
+    textRect = { textX, textY, surface->w, surface->h };
     SDL_RenderCopy(renderer, texture, NULL, &textRect);
     SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture);
