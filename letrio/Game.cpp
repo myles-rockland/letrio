@@ -111,10 +111,25 @@ Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullp
     Piece tempNext(generator, distribution);
     currentPiece = tempCurrent;
     nextPiece = tempNext;
+
+    // Initialise sound engine
+    engine = irrklang::createIrrKlangDevice();
+
+    if (!engine)
+    {
+        cerr << "Error: sound engine could not be created." << endl;
+        isRunning = false;
+        return;
+    }
+
+    // Start playing the music
+    engine->play2D("letrio.ogg", true);
+
 }
 
 void Game::CleanUp()
 {
+    engine->drop();
     TTF_CloseFont(font);
     TTF_Quit();
     SDL_DestroyRenderer(renderer);
