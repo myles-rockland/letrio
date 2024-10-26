@@ -132,6 +132,8 @@ Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullp
         return;
     }
 
+    bgMusic->setVolume(0.6f);
+
 }
 
 void Game::CleanUp()
