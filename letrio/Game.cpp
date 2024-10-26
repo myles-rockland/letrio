@@ -123,7 +123,7 @@ Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullp
     }
 
     // Start playing the background music
-    bgMusic = engine->play2D("./audio/main-theme-rondeau.ogg", true, false, true);
+    bgMusic = engine->play2D("./audio/mus-main-theme-rondeau.ogg", true, false, true);
 
     if (!bgMusic)
     {
@@ -136,7 +136,7 @@ Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullp
 
 void Game::CleanUp()
 {
-    bgMusic->drop();
+    if (bgMusic) { bgMusic->drop(); }
     engine->drop();
     TTF_CloseFont(font);
     TTF_Quit();
@@ -177,15 +177,18 @@ void Game::HandleInput()
             if (state[SDL_SCANCODE_LEFT])
             {
                 currentPiece.MoveLeft(grid);
+                engine->play2D("./audio/sfx-move-piece-left.ogg");
             }
             if (state[SDL_SCANCODE_RIGHT])
             {
                 currentPiece.MoveRight(grid);
+                engine->play2D("./audio/sfx-move-piece-right.ogg");
             }
             if (state[SDL_SCANCODE_UP]) // Instant Drop
             {
                 currentPiece.DropInstantly(grid);
                 instantDropped = true;
+                engine->play2D("./audio/sfx-instant-drop.ogg");
             }
             if (!downPressed && event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_DOWN) // Fast Drop
             {
@@ -202,18 +205,22 @@ void Game::HandleInput()
             if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_Z) // Need to only activate once
             {
                 currentPiece.Rotate(grid, false);
+                engine->play2D("./audio/sfx-rotate-piece-left.ogg");
             }
             if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_X)
             {
                 currentPiece.Rotate(grid);
+                engine->play2D("./audio/sfx-rotate-piece-right.ogg");
             }
             if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_C)
             {
                 currentPiece.ShuffleLetters();
+                engine->play2D("./audio/sfx-shuffle-letters.ogg");
             }
             if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_SPACE)
             {
                 currentPiece.ChangeShape(grid);
+                engine->play2D("./audio/sfx-change-piece-shape.ogg");
             }
         }
     }
@@ -228,7 +235,7 @@ void Game::Update()
         {
             gameOver = true;
             bgMusic->stop();
-            engine->play2D("./audio/game-over.ogg");
+            engine->play2D("./audio/mus-game-over.ogg");
         }
         else
         {
