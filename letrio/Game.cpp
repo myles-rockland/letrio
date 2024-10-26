@@ -4,10 +4,9 @@
 
 using namespace std;
 
-Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullptr), font(nullptr), engine(nullptr), bgMusic(nullptr), currentScore(0), speed(START_SPEED), level(START_LEVEL), highScore(0), downPressed(false), lastDropTicks(0), instantDropped(0), currentPiece(generator, distribution), nextPiece(generator, distribution)
+Game::Game() : grid{}, isRunning(true), gameOver(false), window(nullptr), renderer(nullptr), font(nullptr), engine(nullptr), bgMusic(nullptr), currentScore(0), speed(START_SPEED), level(START_LEVEL), highScore(0), downPressed(false), lastDropTicks(0), instantDropped(0), currentPiece(generator, distribution), nextPiece(generator, distribution)
 {
     // Initialise SDL subsystems
-    // Might need to init audio system as well
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
         cerr << "SDL failed to initialise. SDL_Error: " << SDL_GetError() << endl;
@@ -161,7 +160,9 @@ void Game::Run()
         Render();
         Uint64 end = SDL_GetPerformanceCounter();
         float msElapsed = (end - start) / (float) SDL_GetPerformanceFrequency() * 1000.0f;
-        SDL_Delay(floor(16.666f - msElapsed)); // Cap the game to 60FPS
+        cout << "Game will be delayed for " << floor(16.666f - msElapsed) << "ms" << endl;
+        if (msElapsed < 16.666f)
+            SDL_Delay(floor(16.666f - msElapsed)); // Cap the game to 60FPS
     }
     CleanUp();
 }
@@ -208,7 +209,6 @@ void Game::HandleInput()
             {
                 downPressed = false;
                 speed *= FAST_DROP_MULTIPLIER;
-                cout << "Down Released, speed decreased to " << speed << endl;
             }
             if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_Z) // Need to only activate once
             {
@@ -293,7 +293,7 @@ void Game::Render()
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-    // Render grid
+    // Render grid lines
     for (int i = 0; i <= GRID_WIDTH; i++) // Vertical lines
     {
         float xPosition = i * CELL_LENGTH;
@@ -485,24 +485,9 @@ void Game::Render()
 
 void Game::CheckWords()
 {
-    // Only need to check rows/columns concerned with currentPiece, no need to go through the whole board
-    int heightLowerBound = 999;
-    int widthLowerBound = 999;
-    for (int i = 0; i < 3; i++)
-    {
-        heightLowerBound = (currentPiece.positions[i][1] < heightLowerBound) ? currentPiece.positions[i][1] : heightLowerBound; // The "lowest" (visually highest) character's y position
-        widthLowerBound = (currentPiece.positions[i][0] < widthLowerBound) ? currentPiece.positions[i][0] : widthLowerBound; // The left-most character's x position
-    }
-    int heightUpperBound = -1;
-    int widthUpperBound = -1;
-    for (int i = 0; i < 3; i++)
-    {
-        heightUpperBound = (currentPiece.positions[i][1] > heightUpperBound) ? currentPiece.positions[i][1] : heightUpperBound; // The "highest" (visually lowest) character's y position
-        widthUpperBound = (currentPiece.positions[i][0] > widthUpperBound) ? currentPiece.positions[i][0] : widthUpperBound; // The right-most character's x position
-    }
-
     // Loop through rows
-    for (int i = heightLowerBound; i <= heightUpperBound; i++)
+    //for (int i = heightLowerBound; i <= heightUpperBound; i++)
+    for (int i = 0; i < GRID_HEIGHT; i++)
     {
         // Loop from left to right
         for (int j = 0; j <= GRID_WIDTH - MIN_WORD_SIZE; j++)
@@ -526,7 +511,8 @@ void Game::CheckWords()
     }
 
     // Loop through columns
-    for (int i = widthLowerBound; i <= widthUpperBound; i++)
+    //for (int i = widthLowerBound; i <= widthUpperBound; i++)
+    for (int i = 0; i < GRID_WIDTH; i++)
     {
         // Loop from top to bottom
         string columnOfChars;
@@ -556,9 +542,10 @@ void Game::CheckWords()
     }
 
     // Loop through all columns to drop letters down using "gravity"
+    bool letterDropped = false;
     for (int i = 0; i < GRID_WIDTH; i++)
     {
-        for (int j = GRID_HEIGHT - 1; j >= 0; j--)
+        for (int j = GRID_HEIGHT - 2; j >= 0; j--)
         {
             if (grid[j][i] != ' ' && grid[j + 1][i] == ' ')
             {
@@ -569,23 +556,25 @@ void Game::CheckWords()
                 }
                 grid[k][i] = grid[j][i];
                 grid[j][i] = ' ';
+                letterDropped = true;
             }
         }
     }
 
-    // Need to recursively check for words again if letters dropped from gravity, but this would cause very sudden chains/combos. Need "animations"
+    // Need to recursively check for words again if letters dropped from gravity, but this causes very sudden chains/combos. Need visual feedback
+    if (letterDropped)
+        CheckWords();
 }
 
 bool Game::ValidateWord(const string word)
 {
     if (validWords.find(word) != validWords.end())
     {
-        //cout << "Valid word found: " << word << endl;
-        return true;
+        return true; // Word found
     }
     else
     {
-        return false;
+        return false; // Word not found
     }
 }
 

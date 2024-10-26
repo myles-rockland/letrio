@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Piece::Piece(std::default_random_engine& generator, std::discrete_distribution<int> distribution)
+Piece::Piece(std::default_random_engine& generator, std::discrete_distribution<int> distribution) : orientation{}, positions{}
 {
 	// Assign characters
 	for (int i = 0; i < 3; i++)
