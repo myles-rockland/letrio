@@ -369,7 +369,7 @@ void Game::Render()
     SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), {255, 255, 255, 255}); // Might need to change text colour
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
     int textX = midPoint - (surface->w / 2);
-    int textY = 100;
+    int textY = WINDOW_HEIGHT / 8 * 2;
     SDL_Rect textRect{ textX, textY, surface->w, surface->h };
     SDL_RenderCopy(renderer, texture, NULL, &textRect);
     SDL_FreeSurface(surface);
@@ -380,7 +380,7 @@ void Game::Render()
     surface = TTF_RenderText_Solid(font, text.c_str(), { 255, 255, 255, 255 }); // Might need to change text colour
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     textX = midPoint - (surface->w / 2);
-    textY = 150;
+    textY = WINDOW_HEIGHT / 8 * 3;
     textRect = { textX, textY, surface->w, surface->h };
     SDL_RenderCopy(renderer, texture, NULL, &textRect);
     SDL_FreeSurface(surface);
@@ -391,7 +391,7 @@ void Game::Render()
     surface = TTF_RenderText_Solid(font, text.c_str(), { 255, 255, 255, 255 }); // Might need to change text colour
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     textX = midPoint - (surface->w / 2);
-    textY = 200;
+    textY = WINDOW_HEIGHT / 8 * 4;
     textRect = { textX, textY, surface->w, surface->h };
     SDL_RenderCopy(renderer, texture, NULL, &textRect);
     SDL_FreeSurface(surface);
@@ -402,7 +402,7 @@ void Game::Render()
     surface = TTF_RenderText_Solid(font, text.c_str(), { 255, 255, 255, 255 }); // Might need to change text colour
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     textX = midPoint - (surface->w / 2);
-    textY = 250;
+    textY = WINDOW_HEIGHT / 8 * 5;
     textRect = { textX, textY, surface->w, surface->h };
     SDL_RenderCopy(renderer, texture, NULL, &textRect);
     SDL_FreeSurface(surface);
@@ -415,7 +415,7 @@ void Game::Render()
         surface = TTF_RenderText_Solid(font, text.c_str(), { 255, 255, 255, 255 });
         texture = SDL_CreateTextureFromSurface(renderer, surface);
         textX = midPoint - (surface->w / 2);
-        textY = 300 + (i * FONT_SIZE);
+        textY = WINDOW_HEIGHT / 8 * 6 + (i * FONT_SIZE);
         textRect = { textX, textY, surface->w, surface->h };
         SDL_RenderCopy(renderer, texture, NULL, &textRect);
         SDL_FreeSurface(surface);
