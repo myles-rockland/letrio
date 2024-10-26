@@ -123,7 +123,7 @@ Game::Game() : isRunning(true), gameOver(false), window(nullptr), renderer(nullp
     }
 
     // Start playing the background music
-    bgMusic = engine->play2D("./audio/letrio-main-theme-rondeau.ogg", true, false, true);
+    bgMusic = engine->play2D("./audio/main-theme-rondeau.ogg", true, false, true);
 
     if (!bgMusic)
     {
@@ -228,7 +228,7 @@ void Game::Update()
         {
             gameOver = true;
             bgMusic->stop();
-            engine->play2D("./audio/letrio-game-over.ogg");
+            engine->play2D("./audio/game-over.ogg");
         }
         else
         {
