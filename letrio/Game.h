@@ -24,6 +24,7 @@ private:
 	void CheckWords();
 	bool ValidateWord(const string word);
 	void UpdateScore(const string word);
+	void SaveHighScore() const;
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;

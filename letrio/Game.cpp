@@ -62,7 +62,7 @@ Game::Game() : grid{}, isRunning(true), isPaused(false), gameOver(false), window
         wordsAlphaFile.open(WORDS_FILE_PATH);
         if (!wordsAlphaFile.is_open())
         {
-            throw ios_base::failure("File could not be opened.");
+            throw ios_base::failure("words_alpha.txt file could not be opened.");
         }
     }
     catch (const ios_base::failure& exception)
@@ -93,6 +93,37 @@ Game::Game() : grid{}, isRunning(true), isPaused(false), gameOver(false), window
     }
     
     wordsAlphaFile.close();
+
+    // Attempt to open highscore.txt and initialise highScore
+    ifstream highScoreFile;
+    try
+    {
+        highScoreFile.open(HIGHSCORE_FILE_PATH);
+        if (!highScoreFile.is_open())
+        {
+            ofstream newHighScoreFile(HIGHSCORE_FILE_PATH);
+            if (!newHighScoreFile)
+            {
+                throw ios_base::failure("high_score.txt file could not be created/opened for writing.");
+            }
+            newHighScoreFile << 0;
+            newHighScoreFile.close();
+            
+            highScoreFile.open(HIGHSCORE_FILE_PATH);
+            if (!highScoreFile.is_open())
+            {
+                throw ios_base::failure("high_score.txt file could not be opened for reading.");
+            }
+        }
+        highScoreFile >> highScore;
+        highScoreFile.close();
+    }
+    catch (const ios_base::failure& exception)
+    {
+        cerr << "An error has occured: " << exception.what() << endl;
+        isRunning = false;
+        return;
+    }
 
     // Initialise letterWeights using characterCounts
     vector<int> letterWeights;
@@ -142,7 +173,11 @@ void Game::CleanUp()
         bgMusic->drop(); 
         bgMusic = 0;
     }
-    engine->drop();
+    if (engine)
+    {
+        engine->drop();
+        engine = 0;
+    }
     TTF_CloseFont(font);
     TTF_Quit();
     SDL_DestroyRenderer(renderer);
@@ -217,7 +252,6 @@ void Game::HandleInput()
                 if (event.key.keysym.scancode == SDL_SCANCODE_DOWN && event.key.repeat == 0 && event.type == SDL_KEYDOWN) // Fast Drop
                 {
                     speed /= FAST_DROP_MULTIPLIER;
-                    cout << "Down Pressed, speed increased to " << speed << endl;
                 }
                 if (event.key.keysym.scancode == SDL_SCANCODE_DOWN && event.type == SDL_KEYUP) // Reset speed after fast drop
                 {
@@ -267,6 +301,7 @@ void Game::Update()
                 musGameOver->drop();
                 musGameOver = 0;
             }
+            SaveHighScore();
         }
         else
         {
@@ -296,7 +331,11 @@ void Game::Update()
 
                     nextPiece = newPiece;
 
-                    highScore = (currentScore > highScore) ? currentScore : highScore;
+                    if (currentScore > highScore)
+                    {
+                        highScore = currentScore;
+                        SaveHighScore();
+                    }
                 }
             }
         }
@@ -632,5 +671,24 @@ void Game::UpdateScore(const string word)
         level++;
         speed *= 0.9f;
         engine->play2D("./audio/sfx-level-up.ogg");
+    }
+}
+
+void Game::SaveHighScore() const
+{
+    try
+    {
+        ofstream highScoreFile(HIGHSCORE_FILE_PATH, ios_base::trunc);
+        if (!highScoreFile.is_open())
+        {
+            throw ios_base::failure("high_score.txt file could not be opened for writing.");
+        }
+        highScoreFile << highScore;
+        highScoreFile.close();
+    }
+    catch (const ios_base::failure& exception)
+    {
+        cerr << "An error has occured: " << exception.what() << endl;
+        return;
     }
 }
