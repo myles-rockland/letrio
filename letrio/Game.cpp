@@ -160,7 +160,6 @@ void Game::Run()
         Render();
         Uint64 end = SDL_GetPerformanceCounter();
         float msElapsed = (end - start) / (float) SDL_GetPerformanceFrequency() * 1000.0f;
-        cout << "Game will be delayed for " << floor(16.666f - msElapsed) << "ms" << endl;
         if (msElapsed < 16.666f)
             SDL_Delay(floor(16.666f - msElapsed)); // Cap the game to 60FPS
     }
@@ -263,12 +262,14 @@ void Game::Update()
             // If the current piece attempts to drop but is blocked, fix it in place
             if (msSinceDrop > speed || instantDropped) // If ms since last drop is greater than speed
             {
-                instantDropped = false;
                 bool didDrop = currentPiece.Drop(grid);
                 lastDropTicks = SDL_GetTicks64();
                 if (!didDrop)
                 {
                     currentPiece.Fix(grid);
+                    if(!instantDropped)
+                        engine->play2D("./audio/sfx-fix-piece.ogg");
+                    instantDropped = false;
 
                     // Check for words and increase score/level/speed if necessary
                     CheckWords();
@@ -570,6 +571,7 @@ bool Game::ValidateWord(const string word)
 {
     if (validWords.find(word) != validWords.end())
     {
+        engine->play2D("./audio/sfx-make-word.ogg");
         return true; // Word found
     }
     else
@@ -594,5 +596,6 @@ void Game::UpdateScore(const string word)
     {
         level++;
         speed *= 0.9f;
+        engine->play2D("./audio/sfx-level-up.ogg");
     }
 }
