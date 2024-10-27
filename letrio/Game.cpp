@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Game::Game() : grid{}, isRunning(true), isPaused(false), gameOver(false), window(nullptr), renderer(nullptr), font(nullptr), engine(nullptr), bgMusic(nullptr), currentScore(0), speed(START_SPEED), level(START_LEVEL), highScore(0), downPressed(false), lastDropTicks(0), instantDropped(0), currentPiece(generator, distribution), nextPiece(generator, distribution)
+Game::Game() : grid{}, isRunning(true), isPaused(false), gameOver(false), window(nullptr), renderer(nullptr), font(nullptr), engine(nullptr), bgMusic(nullptr), currentScore(0), speed(START_SPEED), level(START_LEVEL), highScore(0), lastDropTicks(0), instantDropped(0), currentPiece(generator, distribution), nextPiece(generator, distribution)
 {
     // Initialise SDL subsystems
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -180,7 +180,7 @@ void Game::HandleInput()
         }
         else if (!gameOver)
         {
-            if (state[SDL_SCANCODE_RETURN] && event.key.repeat == 0)
+            if (event.key.keysym.scancode == SDL_SCANCODE_RETURN && event.key.repeat == 0 && event.type == SDL_KEYDOWN)
             {
                 isPaused = !isPaused;
                 if (isPaused)
@@ -208,41 +208,39 @@ void Game::HandleInput()
                     if (movedRight)
                         engine->play2D("./audio/sfx-move-piece-right.ogg");
                 }
-                if (state[SDL_SCANCODE_UP]) // Instant Drop
+                if (event.key.keysym.scancode == SDL_SCANCODE_UP && event.key.repeat == 0 && event.type == SDL_KEYDOWN) // Instant Drop
                 {
                     currentPiece.DropInstantly(grid);
                     instantDropped = true;
                     engine->play2D("./audio/sfx-instant-drop.ogg");
                 }
-                if (!downPressed && event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_DOWN) // Fast Drop
+                if (event.key.keysym.scancode == SDL_SCANCODE_DOWN && event.key.repeat == 0 && event.type == SDL_KEYDOWN) // Fast Drop
                 {
-                    downPressed = true;
                     speed /= FAST_DROP_MULTIPLIER;
                     cout << "Down Pressed, speed increased to " << speed << endl;
                 }
-                if (event.type == SDL_KEYUP && event.key.keysym.scancode == SDL_SCANCODE_DOWN) // Reset speed after fast drop
+                if (event.key.keysym.scancode == SDL_SCANCODE_DOWN && event.type == SDL_KEYUP) // Reset speed after fast drop
                 {
-                    downPressed = false;
                     speed *= FAST_DROP_MULTIPLIER;
                 }
-                if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_Z) // Need to only activate once
+                if (event.key.keysym.scancode == SDL_SCANCODE_Z && event.key.repeat == 0 && event.type == SDL_KEYDOWN)
                 {
                     bool rotatedLeft = currentPiece.Rotate(grid, false);
                     if (rotatedLeft)
                         engine->play2D("./audio/sfx-rotate-piece-left.ogg");
                 }
-                else if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_X)
+                else if (event.key.keysym.scancode == SDL_SCANCODE_X && event.key.repeat == 0 && event.type == SDL_KEYDOWN)
                 {
                     bool rotatedRight = currentPiece.Rotate(grid);
                     if (rotatedRight)
                         engine->play2D("./audio/sfx-rotate-piece-right.ogg");
                 }
-                if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_C)
+                if (event.key.keysym.scancode == SDL_SCANCODE_C && event.key.repeat == 0 && event.type == SDL_KEYDOWN)
                 {
                     currentPiece.ShuffleLetters();
                     engine->play2D("./audio/sfx-shuffle-letters.ogg");
                 }
-                if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_SPACE)
+                if (event.key.keysym.scancode == SDL_SCANCODE_SPACE && event.key.repeat == 0 && event.type == SDL_KEYDOWN)
                 {
                     bool changedShape = currentPiece.ChangeShape(grid);
                     if (changedShape)

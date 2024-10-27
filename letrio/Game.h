@@ -37,7 +37,6 @@ private:
 	bool isRunning;
 	bool isPaused;
 	bool gameOver;
-	bool downPressed;
 	char grid[GRID_HEIGHT][GRID_WIDTH];
 	Piece currentPiece;
 	Piece nextPiece;

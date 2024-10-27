@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 
-const int WINDOW_WIDTH = 600;
-const int WINDOW_HEIGHT = 400;
+const int WINDOW_WIDTH = 1200;
+const int WINDOW_HEIGHT = 800;
 const int GRID_WIDTH = 10;
 const int GRID_HEIGHT = 18;
 const int CELL_LENGTH = WINDOW_HEIGHT / GRID_HEIGHT;
