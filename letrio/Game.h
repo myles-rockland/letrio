@@ -35,6 +35,7 @@ private:
 	unordered_set<string> validWords;
 	vector<string> wordsMade;
 	bool isRunning;
+	bool isPaused;
 	bool gameOver;
 	bool downPressed;
 	char grid[GRID_HEIGHT][GRID_WIDTH];

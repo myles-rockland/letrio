@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Game::Game() : grid{}, isRunning(true), gameOver(false), window(nullptr), renderer(nullptr), font(nullptr), engine(nullptr), bgMusic(nullptr), currentScore(0), speed(START_SPEED), level(START_LEVEL), highScore(0), downPressed(false), lastDropTicks(0), instantDropped(0), currentPiece(generator, distribution), nextPiece(generator, distribution)
+Game::Game() : grid{}, isRunning(true), isPaused(false), gameOver(false), window(nullptr), renderer(nullptr), font(nullptr), engine(nullptr), bgMusic(nullptr), currentScore(0), speed(START_SPEED), level(START_LEVEL), highScore(0), downPressed(false), lastDropTicks(0), instantDropped(0), currentPiece(generator, distribution), nextPiece(generator, distribution)
 {
     // Initialise SDL subsystems
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -180,57 +180,74 @@ void Game::HandleInput()
         }
         else if (!gameOver)
         {
-            if (state[SDL_SCANCODE_LEFT])
+            if (state[SDL_SCANCODE_RETURN] && event.key.repeat == 0)
             {
-                bool movedLeft = currentPiece.MoveLeft(grid);
-                if (movedLeft)
-                    engine->play2D("./audio/sfx-move-piece-left.ogg");
+                isPaused = !isPaused;
+                if (isPaused)
+                {
+                    bgMusic->setIsPaused(true);
+                    engine->play2D("./audio/sfx-pause-game.ogg");
+                }
+                else
+                {
+                    bgMusic->setIsPaused(false);
+                    engine->play2D("./audio/sfx-pause-game.ogg");
+                }
             }
-            else if (state[SDL_SCANCODE_RIGHT])
+            if (!isPaused)
             {
-                bool movedRight = currentPiece.MoveRight(grid);
-                if (movedRight)
-                    engine->play2D("./audio/sfx-move-piece-right.ogg");
-            }
-            if (state[SDL_SCANCODE_UP]) // Instant Drop
-            {
-                currentPiece.DropInstantly(grid);
-                instantDropped = true;
-                engine->play2D("./audio/sfx-instant-drop.ogg");
-            }
-            if (!downPressed && event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_DOWN) // Fast Drop
-            {
-                downPressed = true;
-                speed /= FAST_DROP_MULTIPLIER;
-                cout << "Down Pressed, speed increased to " << speed << endl;
-            }
-            if (event.type == SDL_KEYUP && event.key.keysym.scancode == SDL_SCANCODE_DOWN) // Reset speed after fast drop
-            {
-                downPressed = false;
-                speed *= FAST_DROP_MULTIPLIER;
-            }
-            if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_Z) // Need to only activate once
-            {
-                bool rotatedLeft = currentPiece.Rotate(grid, false);
-                if (rotatedLeft)
-                    engine->play2D("./audio/sfx-rotate-piece-left.ogg");
-            }
-            else if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_X)
-            {
-                bool rotatedRight = currentPiece.Rotate(grid);
-                if (rotatedRight)
-                    engine->play2D("./audio/sfx-rotate-piece-right.ogg");
-            }
-            if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_C)
-            {
-                currentPiece.ShuffleLetters();
-                engine->play2D("./audio/sfx-shuffle-letters.ogg");
-            }
-            if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_SPACE)
-            {
-                bool changedShape = currentPiece.ChangeShape(grid);
-                if (changedShape)
-                    engine->play2D("./audio/sfx-change-piece-shape.ogg");
+                if (state[SDL_SCANCODE_LEFT])
+                {
+                    bool movedLeft = currentPiece.MoveLeft(grid);
+                    if (movedLeft)
+                        engine->play2D("./audio/sfx-move-piece-left.ogg");
+                }
+                else if (state[SDL_SCANCODE_RIGHT])
+                {
+                    bool movedRight = currentPiece.MoveRight(grid);
+                    if (movedRight)
+                        engine->play2D("./audio/sfx-move-piece-right.ogg");
+                }
+                if (state[SDL_SCANCODE_UP]) // Instant Drop
+                {
+                    currentPiece.DropInstantly(grid);
+                    instantDropped = true;
+                    engine->play2D("./audio/sfx-instant-drop.ogg");
+                }
+                if (!downPressed && event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_DOWN) // Fast Drop
+                {
+                    downPressed = true;
+                    speed /= FAST_DROP_MULTIPLIER;
+                    cout << "Down Pressed, speed increased to " << speed << endl;
+                }
+                if (event.type == SDL_KEYUP && event.key.keysym.scancode == SDL_SCANCODE_DOWN) // Reset speed after fast drop
+                {
+                    downPressed = false;
+                    speed *= FAST_DROP_MULTIPLIER;
+                }
+                if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_Z) // Need to only activate once
+                {
+                    bool rotatedLeft = currentPiece.Rotate(grid, false);
+                    if (rotatedLeft)
+                        engine->play2D("./audio/sfx-rotate-piece-left.ogg");
+                }
+                else if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_X)
+                {
+                    bool rotatedRight = currentPiece.Rotate(grid);
+                    if (rotatedRight)
+                        engine->play2D("./audio/sfx-rotate-piece-right.ogg");
+                }
+                if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_C)
+                {
+                    currentPiece.ShuffleLetters();
+                    engine->play2D("./audio/sfx-shuffle-letters.ogg");
+                }
+                if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_SPACE)
+                {
+                    bool changedShape = currentPiece.ChangeShape(grid);
+                    if (changedShape)
+                        engine->play2D("./audio/sfx-change-piece-shape.ogg");
+                }
             }
         }
     }
@@ -238,7 +255,7 @@ void Game::HandleInput()
 
 void Game::Update()
 {
-    if (!gameOver)
+    if (!gameOver && !isPaused)
     {
         // If the current piece overlaps with anything, game over
         if (currentPiece.IsOverlapping(grid))
@@ -307,57 +324,63 @@ void Game::Render()
     }
 
     // Render characters in grid
-    SDL_Color textColor = { 190, 193, 190, 255 };
-    for (int i = 0; i < GRID_HEIGHT; i++)
+    if (!isPaused)
     {
-        for (int j = 0; j < GRID_WIDTH; j++)
+        SDL_Color textColor = { 190, 193, 190, 255 };
+        for (int i = 0; i < GRID_HEIGHT; i++)
         {
-            char gridValue = grid[i][j];
-            if (gridValue != ' ')
+            for (int j = 0; j < GRID_WIDTH; j++)
             {
-                if (VOWELS.find(gridValue) != string::npos)
+                char gridValue = grid[i][j];
+                if (gridValue != ' ')
                 {
-                    textColor = { 212, 157, 41, 255 };
-                }
-                else
-                {
-                    textColor = { 190, 193, 190, 255 };
-                }
-                if (gameOver)
-                {
-                    textColor = { 255, 0, 0, 255 };
-                }
+                    if (VOWELS.find(gridValue) != string::npos)
+                    {
+                        textColor = { 212, 157, 41, 255 };
+                    }
+                    else
+                    {
+                        textColor = { 190, 193, 190, 255 };
+                    }
+                    if (gameOver)
+                    {
+                        textColor = { 255, 0, 0, 255 };
+                    }
 
-                SDL_Surface* surface = TTF_RenderGlyph_Solid(font, gridValue, textColor); // Might need to change text colour
-                SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+                    SDL_Surface* surface = TTF_RenderGlyph_Solid(font, gridValue, textColor); // Might need to change text colour
+                    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 
-                int textX = (j * CELL_LENGTH) + ((CELL_LENGTH - surface->w) / 2);
-                int textY = (i * CELL_LENGTH) + ((CELL_LENGTH - surface->h) / 2);
-                
-                SDL_Rect textRect{ textX, textY, surface->w, surface->h };
-                SDL_RenderCopy(renderer, texture, NULL, &textRect);
-                SDL_FreeSurface(surface);
-                SDL_DestroyTexture(texture);
+                    int textX = (j * CELL_LENGTH) + ((CELL_LENGTH - surface->w) / 2);
+                    int textY = (i * CELL_LENGTH) + ((CELL_LENGTH - surface->h) / 2);
+
+                    SDL_Rect textRect{ textX, textY, surface->w, surface->h };
+                    SDL_RenderCopy(renderer, texture, NULL, &textRect);
+                    SDL_FreeSurface(surface);
+                    SDL_DestroyTexture(texture);
+                }
             }
         }
     }
 
     // Render currentPiece and its characters using their positions
-    for (int i = 0; i < 3; i++)
+    if (!isPaused)
     {
-        char character = currentPiece.GetCharacter(i);
+        for (int i = 0; i < 3; i++)
+        {
+            char character = currentPiece.GetCharacter(i);
 
-        SDL_Surface* surface = TTF_RenderGlyph_Solid(font, character, { 255, 255, 255, 255 }); // Might need to change text colour
-        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+            SDL_Surface* surface = TTF_RenderGlyph_Solid(font, character, { 255, 255, 255, 255 }); // Might need to change text colour
+            SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 
-        int textX = (currentPiece.positions[i][0] * CELL_LENGTH) + 2 + ((CELL_LENGTH - surface->w) / 2);
-        int textY = (currentPiece.positions[i][1] * CELL_LENGTH) + ((CELL_LENGTH - surface->h) / 2);
+            int textX = (currentPiece.positions[i][0] * CELL_LENGTH) + 2 + ((CELL_LENGTH - surface->w) / 2);
+            int textY = (currentPiece.positions[i][1] * CELL_LENGTH) + ((CELL_LENGTH - surface->h) / 2);
 
-        
-        SDL_Rect textRect{ textX, textY, surface->w, surface->h };
-        SDL_RenderCopy(renderer, texture, NULL, &textRect);
-        SDL_FreeSurface(surface);
-        SDL_DestroyTexture(texture);
+
+            SDL_Rect textRect{ textX, textY, surface->w, surface->h };
+            SDL_RenderCopy(renderer, texture, NULL, &textRect);
+            SDL_FreeSurface(surface);
+            SDL_DestroyTexture(texture);
+        }
     }
 
     // Render nextPiece at top right
@@ -472,6 +495,20 @@ void Game::Render()
     {
         text = "Game Over!";
         surface = TTF_RenderText_Solid(font, text.c_str(), { 255, 0, 0, 255 });
+        texture = SDL_CreateTextureFromSurface(renderer, surface);
+        textX = midPoint - (surface->w / 2);
+        textY = WINDOW_HEIGHT - FONT_SIZE;
+        textRect = { textX, textY, surface->w, surface->h };
+        SDL_RenderCopy(renderer, texture, NULL, &textRect);
+        SDL_FreeSurface(surface);
+        SDL_DestroyTexture(texture);
+    }
+
+    // Render pause text if game is paused
+    if (isPaused)
+    {
+        text = "Game Paused";
+        surface = TTF_RenderText_Solid(font, text.c_str(), { 212, 157, 41, 255 });
         texture = SDL_CreateTextureFromSurface(renderer, surface);
         textX = midPoint - (surface->w / 2);
         textY = WINDOW_HEIGHT - FONT_SIZE;
