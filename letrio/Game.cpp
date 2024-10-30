@@ -666,7 +666,7 @@ void Game::UpdateScore(const string word)
         bonusMultiplier = PALINDROME_MULTIPLIER;
     }
     currentScore += level * word.size() * bonusMultiplier;
-    if (wordsMade.size() > level * 5)
+    if (wordsMade.size() >= level * 5)
     {
         level++;
         speed *= 0.9f;
