@@ -132,6 +132,10 @@ Game::Game() : grid{}, isRunning(true), isPaused(false), gameOver(false), window
         letterWeights.push_back(pair.second);
     }
 
+    // Seed the random number generators
+    srand(time(NULL));
+    generator.seed(time(NULL));
+
     // Initialise distribution using letterWeights
     std::discrete_distribution<int> tempDistribution(letterWeights.begin(), letterWeights.end());
     distribution = tempDistribution;
@@ -163,7 +167,6 @@ Game::Game() : grid{}, isRunning(true), isPaused(false), gameOver(false), window
     }
 
     bgMusic->setVolume(0.6f);
-
 }
 
 void Game::CleanUp()
