@@ -18,10 +18,11 @@ public:
 	bool ChangeShape(const char grid[GRID_HEIGHT][GRID_WIDTH]); // Change shape. Use with currentPiece
 	bool IsOverlapping(const char grid[GRID_HEIGHT][GRID_WIDTH]) const;
 	char GetCharacter(const int index) const;
-	int positions[3][2];
+	int GetCharacterPosition(const int characterIndex, const int positionIndex) const; // Get a character's grid position. (positionIndex = 0) is character's x position, (positionIndex = 1) is character's y position.
 private:
 	enum Orientation { Up, Right, Down, Left } orientation; // Can start in any orientation
 	enum Shape { L, Line } shape; // Can start in any shape
 	char characters[3];
+	int positions[3][2];
 };
 

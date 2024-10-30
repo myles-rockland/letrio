@@ -837,3 +837,16 @@ char Piece::GetCharacter(const int index) const
 	}
 	return ' ';
 }
+
+int Piece::GetCharacterPosition(const int characterIndex, const int positionIndex) const
+{
+	try
+	{
+		return positions[characterIndex][positionIndex];
+	}
+	catch (std::out_of_range& e)
+	{
+		std::cerr << "Index out of range error: " << e.what() << std::endl;
+	}
+	return 0;
+}

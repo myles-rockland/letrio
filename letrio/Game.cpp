@@ -409,8 +409,8 @@ void Game::Render()
             SDL_Surface* surface = TTF_RenderGlyph_Solid(font, character, { 255, 255, 255, 255 }); // Might need to change text colour
             SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 
-            int textX = (currentPiece.positions[i][0] * CELL_LENGTH) + 2 + ((CELL_LENGTH - surface->w) / 2);
-            int textY = (currentPiece.positions[i][1] * CELL_LENGTH) + ((CELL_LENGTH - surface->h) / 2);
+            int textX = (currentPiece.GetCharacterPosition(i, 0) * CELL_LENGTH) + 2 + ((CELL_LENGTH - surface->w) / 2);
+            int textY = (currentPiece.GetCharacterPosition(i, 1) * CELL_LENGTH) + ((CELL_LENGTH - surface->h) / 2);
 
 
             SDL_Rect textRect{ textX, textY, surface->w, surface->h };
@@ -430,8 +430,8 @@ void Game::Render()
         SDL_Surface* surface = TTF_RenderGlyph_Solid(font, character, { 255, 255, 255, 255 }); // Might need to change text colour
         SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 
-        int textX = midPoint + 2 + (nextPiece.positions[i][0] - 4) * CELL_LENGTH + ((CELL_LENGTH - surface->w) / 2); // -4 is a magic number here based on grid spawn point positions in Piece constructor
-        int textY = (WINDOW_HEIGHT / 20) + (nextPiece.positions[i][1] * CELL_LENGTH) + ((CELL_LENGTH - surface->h) / 2);
+        int textX = midPoint + 2 + (nextPiece.GetCharacterPosition(i, 0) - 4) * CELL_LENGTH + ((CELL_LENGTH - surface->w) / 2); // -4 is a magic number here based on grid spawn point positions in Piece constructor
+        int textY = (WINDOW_HEIGHT / 20) + (nextPiece.GetCharacterPosition(i, 1) * CELL_LENGTH) + ((CELL_LENGTH - surface->h) / 2);
 
         SDL_Rect textRect{ textX, textY, surface->w, surface->h };
         SDL_RenderCopy(renderer, texture, NULL, &textRect);
