@@ -259,13 +259,13 @@ void Game::HandleInput()
                 }
                 if (event.key.keysym.scancode == SDL_SCANCODE_Z && event.key.repeat == 0 && event.type == SDL_KEYDOWN)
                 {
-                    bool rotatedLeft = currentPiece.Rotate(grid, false);
+                    bool rotatedLeft = currentPiece.RotateAnticlockwise(grid);
                     if (rotatedLeft)
                         engine->play2D("./audio/sfx-rotate-piece-left.ogg");
                 }
                 else if (event.key.keysym.scancode == SDL_SCANCODE_X && event.key.repeat == 0 && event.type == SDL_KEYDOWN)
                 {
-                    bool rotatedRight = currentPiece.Rotate(grid);
+                    bool rotatedRight = currentPiece.RotateClockwise(grid);
                     if (rotatedRight)
                         engine->play2D("./audio/sfx-rotate-piece-right.ogg");
                 }
