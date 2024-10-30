@@ -533,7 +533,7 @@ void Game::Render()
     // Render game over text if game is over
     if (gameOver)
     {
-        text = "Game Over!";
+        text = "Game Over! ESC to Exit";
         surface = TTF_RenderText_Solid(font, text.c_str(), { 255, 0, 0, 255 });
         texture = SDL_CreateTextureFromSurface(renderer, surface);
         textX = midPoint - (surface->w / 2);
