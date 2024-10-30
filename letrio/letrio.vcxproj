@@ -112,6 +112,15 @@
       <AdditionalLibraryDirectories>C:\Users\Myles\irrKlang\lib\Winx64-visualStudio;C:\Users\mrockland\irrKlang\lib\Winx64-visualStudio;C:\Users\mrockland\SDL2_ttf\lib\x64;C:\Users\mrockland\SDL2\lib\x64;C:\Users\Myles\SDL2_ttf\lib\x64;C:\Users\Myles\SDL2\SDL2-2.30.8\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /i "$(ProjectDir)words_alpha.txt" "$(OutDir)"
+xcopy /y /i "$(ProjectDir)KarenFat.ttf" "$(OutDir)"
+xcopy /y /i "$(ProjectDir)SDL2.dll" "$(OutDir)"
+xcopy /y /i "$(ProjectDir)SDL2_ttf.dll" "$(OutDir)"
+xcopy /y /i "$(ProjectDir)irrKlang.dll" "$(OutDir)"
+xcopy /y /i /e "$(ProjectDir)audio" "$(OutDir)audio\"
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -121,13 +130,24 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\Myles\irrKlang\include;C:\Users\mrockland\irrKlang\include;C:\Users\mrockland\SDL2_ttf\include;C:\Users\mrockland\SDL2\include;C:\Users\Myles\SDL2_ttf\include;C:\Users\Myles\SDL2\SDL2-2.30.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\Myles\irrKlang\lib\Winx64-visualStudio;C:\Users\mrockland\irrKlang\lib\Winx64-visualStudio;C:\Users\mrockland\SDL2_ttf\lib\x64;C:\Users\mrockland\SDL2\lib\x64;C:\Users\Myles\SDL2_ttf\lib\x64;C:\Users\Myles\SDL2\SDL2-2.30.8\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /i "$(ProjectDir)words_alpha.txt" "$(OutDir)"
+xcopy /y /i "$(ProjectDir)KarenFat.ttf" "$(OutDir)"
+xcopy /y /i "$(ProjectDir)SDL2.dll" "$(OutDir)"
+xcopy /y /i "$(ProjectDir)SDL2_ttf.dll" "$(OutDir)"
+xcopy /y /i "$(ProjectDir)irrKlang.dll" "$(OutDir)"
+xcopy /y /i /e "$(ProjectDir)audio" "$(OutDir)audio\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
