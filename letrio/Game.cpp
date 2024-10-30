@@ -38,7 +38,7 @@ Game::Game() : grid{}, isRunning(true), isPaused(false), gameOver(false), window
         return;
     }
 
-    font = TTF_OpenFont("KarenFat.ttf", FONT_SIZE);
+    font = TTF_OpenFont(FONT_FILE_PATH.c_str(), FONT_SIZE);
     if (font == nullptr)
     {
         cerr << "Font couldn't be opened. TTF_Error: " << TTF_GetError() << endl;
