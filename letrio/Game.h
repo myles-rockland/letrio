@@ -47,5 +47,4 @@ private:
 	float speed;
 	Uint64 lastDropTicks;
 	int level;
-	// Game will need a way to save high score...
 };
