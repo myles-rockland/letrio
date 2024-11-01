@@ -326,7 +326,7 @@ void Piece::DropInstantly(char grid[GRID_HEIGHT][GRID_WIDTH])
 	case Up:
 		if (shape == L)
 		{
-			// Drop the shortest distance. Can be optimised probably
+			// Drop the shortest distance.
 			int distance1 = 0;
 			while (positions[1][1] + 1 + distance1 < GRID_HEIGHT && grid[positions[1][1] + 1 + distance1][positions[1][0]] == ' ')
 			{

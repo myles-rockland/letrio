@@ -46,27 +46,38 @@ If a piece is generated and it overlaps any existing letters on the grid, the ga
 ### Moving Pieces
 Pieces can move left and right. They can also drop faster or instantaneously.
 ![Gif of moving a piece](./images/movement.gif)
+![Code example of dropping a piece](./images/code_example_drop.png)
+![Code example of moving a piece](./images/code_example_move_left.png)
+![Code example of dropping a piece instantly](./images/code_example_drop_instantly.png)
 ### Rotating Pieces
 Pieces can rotate clockwise or anticlockwise. The origin of rotation is the grid cell of the second/middle character.
 ![Gif of rotating a piece](./images/rotation.gif)
+![Code example of rotating a piece](./images/code_example_rotate_clockwise.png)
 ### Shuffling Letters (Unique)
 Letters within a piece can shuffle positions.
 ![Gif of shuffling letters within a piece](./images/shuffling.gif)
+![Code example of shuffling the letters in a piece](./images/code_example_shuffle_letters.png)
 ### Changing Piece Shape (Unique)
 Pieces can change between an L shape and a Line shape.
 ![Gif of changing a piece's shape between an L-shape and a line](./images/change_shape.gif)
+![Code example of changing the shape of a piece](./images/code_example_change_shape.png)
 ### Making Words
 Valid words are four or more letters in length. Words must be written from left to right, or from top to bottom.
 ![Gif of making the word "arts"](./images/make_word.gif)
+![Code example of checking for words in the grid](./images/code_example_check_words.png)
+![Code example of validating a word](./images/code_example_validate_word.png)
 ### Gravity
 When pieces are fixed to the board, gravity takes effect and drops letters as low as possible. This can create combos of making words.
 ![Gif of gravity causing letters to fall](./images/gravity.gif)
+![Code example of gravity causing letters to fall](./images/code_example_gravity.png)
 ### Levels
 For every 5 words the player makes, the level will increase. This will cause the pieces to drop faster and increase the difficulty.
 ![Gif of levelling up](./images/level_up.gif)
+![Code example of updating score and levelling up](./images/code_example_update_score.png)
 ### Pause Anticheat
 To prevent players from pausing to cheat and slow the game down, the screen will clear the grid while the game is paused.
 ![Gif of game pausing and clearing letters from the screen](./images/pause.gif)
+![Code example of the pause anticheat](./images/code_example_pause_anticheat.png)
 
 ## Design Diagrams
 

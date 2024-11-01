@@ -564,7 +564,6 @@ void Game::Render()
 void Game::CheckWords()
 {
     // Loop through rows
-    //for (int i = heightLowerBound; i <= heightUpperBound; i++)
     for (int i = 0; i < GRID_HEIGHT; i++)
     {
         // Loop from left to right
@@ -589,7 +588,6 @@ void Game::CheckWords()
     }
 
     // Loop through columns
-    //for (int i = widthLowerBound; i <= widthUpperBound; i++)
     for (int i = 0; i < GRID_WIDTH; i++)
     {
         // Loop from top to bottom
