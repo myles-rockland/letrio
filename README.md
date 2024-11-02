@@ -115,6 +115,33 @@ Vowels are weighted higher so they are more likely to generate, making it easier
 ![Code for handling the high score file during game initialisation](./images/file_handling_high_score.png)
 ![Code for handling the high score file when saving high score](./images/file_handling_high_score2.png)
 
+## Test Cases
+A piece can come in one of eight permutations (4 orientations \* 2 shapes) listed below:
+- Up-oriented L-shape
+- Up-oriented Line-shape
+- Right-oriented L-shape
+- Right-oriented Line-shape
+- Down-oriented L-shape
+- Down-oriented Line-shape
+- Left-oriented L-shape
+- Left-oriented Line-shape
+
+The following tests were performed on 02/11/24:
+| Case | Expected Outcome | Actual Outcome |
+| --- | --- | --- |
+| Check if pieces in all permutations can move left outside of grid | Pieces stay within grid boundaries | Pieces stayed within grid boundaries |
+| Check if pieces in all permutations can move right outside of grid | Pieces stay within grid boundaries | Pieces stayed within grid boundaries |
+| Check if pieces in all permutations can rotate clockwise to place a character outside of the grid | Pieces stay within grid boundaries | Pieces stayed within grid boundaries |
+| Check if pieces in all permutations can rotate anticlockwise to place a character outside of the grid | Pieces stay within grid boundaries | Pieces stayed within grid boundaries |
+| Check if pieces in all permutations can change shape to place a character outside of the grid | Pieces stay within grid boundaries | Pieces stayed within grid boundaries |
+| Check if pieces in all permutations can shuffle letters to change character positions | Letters change positions | Letters changed positions |
+| Check if pieces in all permutations can instant drop to bottom grid boundary | Pieces drop to bottom grid boundary | Pieces dropped to bottom grid boundary |
+| Check if pieces in all permutations can instant drop on top of a character | Pieces drop on top of character in grid | Pieces dropped on top of character in grid |
+| Check if currentPiece changes to nextPiece when fixing to grid | currentPiece changes to nextPiece | currentPiece changed to nextPiece |
+| Check if gravity causes letters to fall when fixing to grid | Letters fall to lowest possible position | Letters fell to lowest possible position |
+| Check if game over screen is shown when piece overlaps | Game over screen is shown | Game over screen was shown |
+| Check if pause screen clears letters from grid | Pause screen clears letters from grid | Pause screen cleared letters from grid |
+
 ## Evaluation
 I believe that I have created a fun prototype of a game that demonstrates a good understand of writing unmanaged code in the object-oriented paradigm. 
 
