@@ -87,6 +87,11 @@ For every 5 words the player makes, the level will increase. This will cause the
 To prevent players from pausing to cheat and slow the game down, the screen will clear the grid while the game is paused.
 ![Gif of game pausing and clearing letters from the screen](./images/pause.gif)
 ![Code example of the pause anticheat](./images/code_example_pause_anticheat.png)
+### Letter Probabilities
+The game uses a discrete distribution with weights for each letter of the alphabet to generate characters inside a piece. 
+Vowels are weighted higher so they are more likely to generate, making it easier to create words.
+![Code example of generating letter weights](./images/code_example_letter_weights.png)
+![Code example of the piece constructor](./images/code_example_piece_constructor.png)
 
 ## Sample Screens
 
