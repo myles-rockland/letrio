@@ -34,6 +34,15 @@ If a piece is generated and it overlaps any existing letters on the grid, the ga
 - **Return** - Pause game
 - **Escape** - Quit game
 
+## Design Diagrams
+
+### Piece Orientation, Shape & Alignment Diagram
+The following diagram shows all of the possible combinations of shapes and orientations, and their alignments:
+![Piece orientation, shape and alignment diagram](./images/piece_orientation_shape_&_alignment.png)
+### Class Diagram
+The following diagram highlights the main classes, member variables and methods within the game:
+![Class diagram](./images/class_diagram.png)
+
 ## Game Programming Patterns
 
 ### Game Loop
@@ -78,15 +87,6 @@ For every 5 words the player makes, the level will increase. This will cause the
 To prevent players from pausing to cheat and slow the game down, the screen will clear the grid while the game is paused.
 ![Gif of game pausing and clearing letters from the screen](./images/pause.gif)
 ![Code example of the pause anticheat](./images/code_example_pause_anticheat.png)
-
-## Design Diagrams
-
-### Piece Orientation, Shape & Alignment Diagram
-The following diagram shows all of the possible combinations of shapes and orientations, and their alignments:
-![Piece orientation, shape and alignment diagram](./images/piece_orientation_shape_&_alignment.png)
-### Class Diagram
-The following diagram highlights the main classes, member variables and methods within the game:
-![Class diagram](./images/class_diagram.png)
 
 ## Sample Screens
 
