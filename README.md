@@ -11,7 +11,7 @@ Letrio is a falling-block puzzle game about making words.
 - words_alpha.txt file - https://github.com/dwyl/english-words
 
 ## YouTube Video
-YouTube Video: [insert youtube video]
+YouTube Video: https://youtu.be/7idDiGCV7Hg
 
 ## Game Objective
 The objective of Letrio is to use letters within given tromino pieces to make words in a grid. 
